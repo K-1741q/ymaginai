@@ -176,7 +176,9 @@ function EducationWheel() {
 function RadarChart() {
   const [progress, setProgress] = useState(0);
   const [hoveredAxis, setHoveredAxis] = useState(null);
+  const [pulse, setPulse] = useState(0);
   const animRef = useRef(null);
+  const pulseRef = useRef(null);
   const size = 320;
   const cx = size / 2;
   const cy = size / 2;
@@ -194,7 +196,21 @@ function RadarChart() {
       if (p < 1) animRef.current = requestAnimationFrame(animate);
     };
     animRef.current = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animRef.current);
+
+    let pulseStart = null;
+    const pulseDuration = 1200;
+    const animatePulse = (ts) => {
+      if (!pulseStart) pulseStart = ts;
+      const p = ((ts - pulseStart) % pulseDuration) / pulseDuration;
+      setPulse(p);
+      pulseRef.current = requestAnimationFrame(animatePulse);
+    };
+    pulseRef.current = requestAnimationFrame(animatePulse);
+
+    return () => {
+      cancelAnimationFrame(animRef.current);
+      cancelAnimationFrame(pulseRef.current);
+    };
   }, []);
 
   const toRad = deg => (deg - 90) * Math.PI / 180;
@@ -209,6 +225,10 @@ function RadarChart() {
     return `${p.x},${p.y}`;
   }).join(" ");
 
+  const pulseR = 6 + Math.sin(pulse * Math.PI * 2) * 4;
+  const pulseOpacity = 0.15 + Math.sin(pulse * Math.PI * 2) * 0.1;
+  const pulseOuterR = 14 + Math.sin(pulse * Math.PI * 2) * 8;
+
   const descriptions = [
     "Długofalowe myślenie o celach i kierunku rozwoju firmy",
     "Efektywność procesów wewnętrznych i zarządzanie zasobami",
@@ -219,7 +239,7 @@ function RadarChart() {
   ];
 
   return (
-    <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:16 }}>
+    <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:0 }}>
       <svg width={size} height={size} style={{ overflow:"visible" }}>
         {levels.map((lv, li) => (
           <polygon key={li}
@@ -255,15 +275,21 @@ function RadarChart() {
             </text>
           );
         })}
+        {/* Pulsujący punkt w centrum */}
+        <circle cx={cx} cy={cy} r={pulseOuterR} fill="rgba(255,42,42,0)" stroke={`rgba(255,42,42,${pulseOpacity})`} strokeWidth="1.5" />
+        <circle cx={cx} cy={cy} r={pulseR} fill="#ff2a2a" opacity={0.9} />
       </svg>
-      {hoveredAxis !== null ? (
-        <div style={{ background:"#1a0f2e", border:"2px solid #a855f7", borderRadius:12, padding:"14px 24px", textAlign:"center", maxWidth:320 }}>
-          <div style={{ fontSize:14, color:"#a855f7", fontWeight:700, marginBottom:6 }}>{RADAR_AXES[hoveredAxis].label}</div>
-          <div style={{ fontSize:14, color:"#ffffff", lineHeight:1.6 }}>{descriptions[hoveredAxis]}</div>
-        </div>
-      ) : (
-        <div style={{ fontSize:13, color:"#666", fontStyle:"italic" }}>Najedź na punkt aby zobaczyć opis</div>
-      )}
+      {/* Tooltip o stałej wysokości żeby nie skakało */}
+      <div style={{ height:70, display:"flex", alignItems:"center", justifyContent:"center", width:"100%" }}>
+        {hoveredAxis !== null ? (
+          <div style={{ background:"#1a0f2e", border:"2px solid #a855f7", borderRadius:12, padding:"12px 24px", textAlign:"center", maxWidth:320 }}>
+            <div style={{ fontSize:14, color:"#a855f7", fontWeight:700, marginBottom:4 }}>{RADAR_AXES[hoveredAxis].label}</div>
+            <div style={{ fontSize:13, color:"#ffffff", lineHeight:1.5 }}>{descriptions[hoveredAxis]}</div>
+          </div>
+        ) : (
+          <div style={{ fontSize:13, color:"#666", fontStyle:"italic" }}>Najedź na punkt aby zobaczyć opis</div>
+        )}
+      </div>
     </div>
   );
 }
@@ -336,7 +362,7 @@ export default function Ymaginai() {
             <div style={s.aboutText}>
               <div style={s.aboutInitials}>K..</div>
               <p style={s.bodyText}>
-                Jestem strategiem i ekspertem który łączy wiedzę z ośmiu dziedzin z możliwościami sztucznej inteligencji.
+                Jestem strategiem i ekspertem który łączy wiedzę z ośmiu dziedzin z możliwościami sztucznej inteligencji. Absolwentka <strong style={s.white}>MBA</strong> – do każdego problemu podchodzę interdyscyplinarnie, łącząc perspektywę biznesową, operacyjną i ludzką jednocześnie.
               </p>
               <p style={s.bodyText}>
                 Nie piszę kodu. <strong style={s.white}>Buduję systemy</strong> które eliminują straty czasu i zwiększają przychody.
