@@ -73,20 +73,17 @@ function AnimatedDots() {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     let animId;
+    let running = true;
 
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    resize();
-    window.addEventListener("resize", resize);
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
     const COLORS = [
-      [168, 85, 247],   // purple
-      [255, 42, 42],    // red
-      [124, 58, 237],   // violet
-      [6, 182, 212],    // cyan
-      [236, 72, 153],   // pink
+      [168, 85, 247],
+      [255, 42, 42],
+      [124, 58, 237],
+      [6, 182, 212],
+      [236, 72, 153],
     ];
 
     const dots = Array.from({ length: 80 }, () => {
@@ -95,53 +92,53 @@ function AnimatedDots() {
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
         r: Math.random() * 3 + 1,
-        vx: (Math.random() - 0.5) * 0.6,
-        vy: (Math.random() - 0.5) * 0.6,
+        vx: (Math.random() - 0.5) * 0.8 + (Math.random() > 0.5 ? 0.3 : -0.3),
+        vy: (Math.random() - 0.5) * 0.8 + (Math.random() > 0.5 ? 0.3 : -0.3),
         opacity: Math.random() * 0.6 + 0.2,
         color,
         pulse: Math.random() * Math.PI * 2,
-        pulseSpeed: 0.02 + Math.random() * 0.03,
+        pulseSpeed: 0.03 + Math.random() * 0.04,
       };
     });
 
     const draw = () => {
+      if (!running) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+
       dots.forEach(d => {
         d.x += d.vx;
         d.y += d.vy;
         d.pulse += d.pulseSpeed;
-        if (d.x < 0 || d.x > canvas.width) d.vx *= -1;
-        if (d.y < 0 || d.y > canvas.height) d.vy *= -1;
+        if (d.x < 0) { d.x = 0; d.vx = Math.abs(d.vx); }
+        if (d.x > canvas.width) { d.x = canvas.width; d.vx = -Math.abs(d.vx); }
+        if (d.y < 0) { d.y = 0; d.vy = Math.abs(d.vy); }
+        if (d.y > canvas.height) { d.y = canvas.height; d.vy = -Math.abs(d.vy); }
 
-        const pulsedR = d.r + Math.sin(d.pulse) * 1.2;
+        const pulsedR = d.r + Math.sin(d.pulse) * 1.5;
         const [r, g, b] = d.color;
 
-        // Glow effect
-        const grd = ctx.createRadialGradient(d.x, d.y, 0, d.x, d.y, pulsedR * 4);
+        const grd = ctx.createRadialGradient(d.x, d.y, 0, d.x, d.y, pulsedR * 5);
         grd.addColorStop(0, `rgba(${r},${g},${b},${d.opacity})`);
         grd.addColorStop(1, `rgba(${r},${g},${b},0)`);
         ctx.beginPath();
-        ctx.arc(d.x, d.y, pulsedR * 4, 0, Math.PI * 2);
+        ctx.arc(d.x, d.y, pulsedR * 5, 0, Math.PI * 2);
         ctx.fillStyle = grd;
         ctx.fill();
 
-        // Core dot
         ctx.beginPath();
         ctx.arc(d.x, d.y, pulsedR, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${r},${g},${b},${d.opacity + 0.3})`;
+        ctx.fillStyle = `rgba(${r},${g},${b},${Math.min(d.opacity + 0.4, 1)})`;
         ctx.fill();
       });
 
-      // Connecting lines
       dots.forEach((a, i) => dots.slice(i + 1).forEach(b => {
         const dist = Math.hypot(a.x - b.x, a.y - b.y);
         if (dist < 140) {
-          const alpha = 0.12 * (1 - dist / 140);
           ctx.beginPath();
           ctx.moveTo(a.x, a.y);
           ctx.lineTo(b.x, b.y);
-          ctx.strokeStyle = `rgba(168,85,247,${alpha})`;
-          ctx.lineWidth = 0.6;
+          ctx.strokeStyle = `rgba(168,85,247,${0.15 * (1 - dist / 140)})`;
+          ctx.lineWidth = 0.7;
           ctx.stroke();
         }
       }));
@@ -150,12 +147,21 @@ function AnimatedDots() {
     };
 
     draw();
+
+    const handleResize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    window.addEventListener("resize", handleResize);
+
     return () => {
+      running = false;
       cancelAnimationFrame(animId);
-      window.removeEventListener("resize", resize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
-  return <canvas ref={canvasRef} style={{ position:"fixed", top:0, left:0, width:"100%", height:"100%", zIndex:0, pointerEvents:"none" }} />;
+
+  return <canvas ref={canvasRef} style={{ position:"fixed", top:0, left:0, zIndex:0, pointerEvents:"none" }} />;
 }
 
 const EDU_COLORS = ["#e84393","#f97316","#eab308","#22c55e","#06b6d4","#6366f1","#a855f7","#ec4899"];
@@ -211,8 +217,8 @@ function EducationWheel() {
         ))}
 
         {/* Ground label */}
-        <text x={TRUNK_CX} y={412} textAnchor="middle" fill="#6366f1" fontSize="11"
-          fontFamily="Palatino Linotype, serif" letterSpacing="3" opacity="0.6">WIEDZA</text>
+        <text x={TRUNK_CX} y={415} textAnchor="middle" fill="#a855f7" fontSize="16"
+          fontFamily="Palatino Linotype, serif" letterSpacing="4" fontWeight="700" opacity="1">WIEDZA</text>
 
         {/* Stems from trunk to balloons */}
         {BALLOONS.map((b, i) => {
@@ -294,7 +300,7 @@ function EducationWheel() {
             </div>
           </div>
         ) : (
-          <div style={{ fontSize:13, color:"#555", fontStyle:"italic",
+          <div style={{ fontSize:17, color:"#aaaaaa", fontStyle:"italic",
             fontFamily:"Palatino Linotype, serif" }}>
             Najedź na balon aby zobaczyć kierunek studiów
           </div>
@@ -418,7 +424,7 @@ function RadarChart() {
             <div style={{ fontSize:13, color:"#ffffff", lineHeight:1.5 }}>{descriptions[hoveredAxis]}</div>
           </div>
         ) : (
-          <div style={{ fontSize:13, color:"#666", fontStyle:"italic" }}>Najedź na punkt aby zobaczyć opis</div>
+          <div style={{ fontSize:17, color:"#aaaaaa", fontStyle:"italic" }}>Najedź na punkt aby zobaczyć opis</div>
         )}
       </div>
     </div>
@@ -458,7 +464,7 @@ function ProcessTimeline() {
 
       {/* Title */}
       <div style={{ textAlign:"center", marginBottom:36 }}>
-        <div style={{ display:"inline-block", background:"#0f0a1a", border:"1px solid #ff2a2a", color:"#ff2a2a", fontSize:12, letterSpacing:2, padding:"5px 16px", borderRadius:20, marginBottom:14 }}>
+        <div style={{ display:"inline-block", background:"#ffffff", border:"1px solid #ff2a2a", color:"#ff2a2a", fontSize:12, letterSpacing:2, padding:"5px 16px", borderRadius:20, marginBottom:14 }}>
           © Projekt autorski · Wszelkie prawa zastrzeżone
         </div>
         <div style={{ fontSize:42, fontWeight:700, color:"#111111", fontFamily:"Palatino Linotype, serif" }}>
@@ -654,7 +660,7 @@ export default function Ymaginai() {
               </p>
             </div>
             <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:12 }}>
-              <div style={{ fontSize:13, color:"#a855f7", textTransform:"uppercase", letterSpacing:2, marginBottom:8 }}>8 kierunków studiów</div>
+              <div style={{ fontSize:18, color:"#a855f7", textTransform:"uppercase", letterSpacing:2, marginBottom:20, fontWeight:700 }}>8 kierunków studiów</div>
               <EducationWheel />
             </div>
           </div>
@@ -743,7 +749,7 @@ export default function Ymaginai() {
           <SectionLabel text="Jak to działa?" dark />
           <p style={{ ...s.introText, color:"#333", maxWidth:680, margin:"0 auto 48px" }}>
             Zastanawiasz się czemu dwa tygodnie? Bo w tym czasie Twoja firma traci pieniądze robiąc wszystko ręcznie.
-            <br /><em style={{ color:"#7c3aed" }}>Zobaczmy ile dokładnie.</em>
+            <br /><strong style={{ color:"#ff2a2a", fontSize:32, fontStyle:"normal", display:"block", marginTop:16, letterSpacing:1 }}>Zobaczmy ile dokładnie.</strong>
           </p>
           <ProcessTimeline />
         </div>
@@ -964,7 +970,7 @@ const s = {
   radarTitle: { fontSize: 32, fontWeight: 700, color: "#111111", marginBottom: 24 },
   radarText: { fontSize: 18, color: "#333333", lineHeight: 1.9, marginBottom: 20 },
   radarRight: { display: "flex", flexDirection: "column", alignItems: "center", gap: 16 },
-  radarCaption: { fontSize: 13, color: "#888888", letterSpacing: 1, textAlign: "center", textTransform: "uppercase" },
+  radarCaption: { fontSize: 20, color: "#111111", letterSpacing: 1, textAlign: "center", textTransform: "uppercase", fontWeight: 700 },
 
   cardsRow: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 28 },
   cardsRowTop: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 28, marginBottom: 24 },
