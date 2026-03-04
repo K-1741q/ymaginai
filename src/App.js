@@ -372,8 +372,8 @@ export default function Ymaginai() {
                 Tylko konkretne działania i mierzalne efekty.
               </p>
               <p style={{ ...s.bodyText, color: "#c084fc", fontStyle: "italic" }}>
-                Formularze czytam dwa razy w tygodniu.<br />
-                Reszta czasu jest zajęta. Tak to działa.
+                Formularze czytam raz na dwa tygodnie.<br />
+                Kolejne czytanie już było. Fast Track dostępny dla niecierpliwych.
               </p>
             </div>
             <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:12 }}>
@@ -417,7 +417,7 @@ export default function Ymaginai() {
           <p style={s.introText}>
             Model subskrypcyjny. Płacisz raz za wdrożenie, potem miesięcznie za system który pracuje na Twój biznes.
             <br /><br />
-            <em style={s.em}>Formularze czytam dwa razy w tygodniu. Reszta czasu jest zajęta. Tak to działa.</em>
+            <em style={s.em}>Formularze czytam raz na dwa tygodnie. Kolejne czytanie już było. Fast Track dostępny dla niecierpliwych.</em>
           </p>
           <div style={s.cardsRow}>
             {SERVICES.map((srv, i) => (
@@ -514,8 +514,8 @@ export default function Ymaginai() {
                 czy jestem w stanie realnie pomóc Twojemu biznesowi.
               </p>
               <p style={{ ...s.contactText, fontWeight: 700, color: "#111" }}>
-                Formularze czytam dwa razy w tygodniu.<br />
-                <em style={{ color: "#7c3aed" }}>Reszta czasu jest zajęta. Tak to działa.</em>
+                Formularze czytam raz na dwa tygodnie.<br />
+                <em style={{ color: "#7c3aed" }}>Kolejne czytanie już było. Fast Track dostępny dla niecierpliwych.</em>
               </p>
               <div style={s.contactInfo}>
                 {["Potrzebny NIP firmy", "Tylko firmy (sektor prywatny i publiczny)"].map((t, i) => (
