@@ -22,9 +22,18 @@ const RADAR_AXES = [
 
 const SERVICES = [
   {
+    tier: "✦ Mini",
+    price: "?",
+    sub: "? / mies.",
+    tag: "Jednoosobowa działalność",
+    features: ["Wstępna analiza procesów", "1 moduł systemowy", "Wdrożenie podstawowe", "Opieka subskrypcyjna"],
+    note: "Dla tych którzy dopiero rosną. Cena ustalana indywidualnie – mam coś czego nie ma w cenniku.",
+    highlight: false,
+  },
+  {
     tier: "Start",
-    price: "1 500 zł",
-    sub: "299 zł / mies.",
+    price: "2 500 zł",
+    sub: "399 zł / mies.",
     tag: "Do 5 pracowników",
     response: "Odpowiedź do 72h",
     features: ["Analiza procesów biznesowych", "1 moduł systemowy", "Wdrożenie + konfiguracja", "Opieka subskrypcyjna"],
@@ -32,8 +41,8 @@ const SERVICES = [
   },
   {
     tier: "Scale",
-    price: "3 500 zł",
-    sub: "599 zł / mies.",
+    price: "5 000 zł",
+    sub: "799 zł / mies.",
     tag: "5–20 pracowników",
     response: "Odpowiedź do 48h",
     features: ["Pogłębiona analiza ROI", "Do 3 modułów systemowych", "Wdrożenie + integracje", "Raport z rekomendacjami"],
@@ -654,6 +663,68 @@ export default function Ymaginai() {
         </div>
       </section>
 
+      {/* ROI CALCULATOR OFFER - dark */}
+      <section style={s.secDark}>
+        <div style={s.secInner}>
+          <SectionLabel text="Autorski produkt" />
+          <div style={s.roiOfferWrap}>
+            <div style={s.roiOfferLeft}>
+              <div style={s.roiOfferBadge}>© Projekt autorski · Prawa zastrzeżone</div>
+              <h2 style={s.roiOfferTitle}>
+                <span style={{ color:"#ff2a2a" }}>ROI Calculator</span><br />
+                Kalkulator strat Twojej firmy
+              </h2>
+              <p style={s.roiOfferDesc}>
+                Interaktywny kalkulator który pokazuje klientowi w czasie rzeczywistym ile pieniędzy traci jego firma na ręcznych procesach – od momentu wejścia na stronę.
+              </p>
+              <p style={s.roiOfferDesc}>
+                Wpisuje liczbę pracowników i stawkę godzinową – licznik tyka. Każda sekunda boli. Klient sam dochodzi do wniosku że potrzebuje zmiany – zanim zdąży zapytać o cenę.
+              </p>
+              <div style={s.roiOfferFeatures}>
+                {["Klient widzi własny ból w liczbach – zanim zdąży zapytać o cenę",
+                  "Każda firma dostaje swój własny wynik – nie ogólnik",
+                  "Klient sam dochodzi do wniosku że potrzebuje zmiany",
+                  "Emocje pracują za Ciebie – Ty tylko odbierasz formularz",
+                  "Działa 24h na dobę bez Twojego udziału",
+                  "Rośnie razem z firmą klienta – im większa firma tym większy ból"].map((f, i) => (
+                  <div key={i} style={s.roiOfferFeat}>⚡ {f}</div>
+                ))}
+              </div>
+            </div>
+            <div style={s.roiOfferRight}>
+              <div style={s.roiPriceCard}>
+                <div style={s.roiPriceTag}>Wdrożenie jednorazowe</div>
+                <div style={s.roiPriceAmount}>od 3 500 zł</div>
+                <div style={s.roiPriceSub}>dostosowanie do Twojej branży i strony</div>
+                <div style={s.roiDivider} />
+                <div style={s.roiPriceTag}>Subskrypcja miesięczna</div>
+                <div style={s.roiPriceAmount}>od 299 zł<span style={{ fontSize:16 }}>/mies.</span></div>
+                <div style={s.roiPriceSub}>hosting · aktualizacje · modyfikacje parametrów</div>
+                <div style={s.roiDivider} />
+              <div style={s.roiDivider} />
+              <div style={s.roiMystery}>
+                <div style={s.roiMysteryTitle}>✦ Ból w liczbach</div>
+                <p style={s.roiMysteryDesc}>
+                  Narzędzie które pokazuje Twoim klientom lub kadrze zarządzającej ile kosztuje ich firma każdego dnia bez zmian. Działa na spotkaniach, prezentacjach i stronach internetowych.
+                </p>
+                <p style={s.roiMysteryDesc}>
+                  Dostępne w modelu subskrypcyjnym. Możliwości są znacznie szersze niż to co widzisz publicznie.
+                </p>
+                <div style={s.roiMysteryHint}>
+                  Wypełnij formularz i napisz w komentarzu:<br/>
+                  <span style={{ color:"#ff2a2a", fontWeight:700, fontSize:18 }}>"ból w liczbach"</span><br/>
+                  <em style={{ fontSize:14, color:"#555" }}>– pokażę Ci co jeszcze potrafi i na co go stać.</em>
+                </div>
+              </div>
+                <button style={s.roiBtn} onClick={() => document.getElementById("kontakt")?.scrollIntoView({ behavior:"smooth" })}>
+                  Zapytaj o wdrożenie ✦
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* PORTFOLIO - light */}
       <section id="portfolio" style={s.secLight}>
         <div style={s.secInner}>
@@ -855,6 +926,24 @@ const s = {
   demoDesc: { fontSize: 16, color: "#555555", marginBottom: 24, lineHeight: 1.6 },
   demoBtn: { background: "transparent", border: "2px solid #a855f7", color: "#7c3aed", borderRadius: 8, padding: "10px 24px", fontSize: 15, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 },
   portfolioNote: { fontSize: 16, color: "#666666", fontStyle: "italic", textAlign: "center", lineHeight: 1.8 },
+  roiOfferWrap: { display:"grid", gridTemplateColumns:"1fr 1fr", gap:60, alignItems:"start" },
+  roiOfferLeft: { display:"flex", flexDirection:"column", gap:20 },
+  roiOfferBadge: { display:"inline-block", background:"#1a0f2e", border:"1px solid #ff2a2a", color:"#ff2a2a", fontSize:12, letterSpacing:2, padding:"6px 16px", borderRadius:20, width:"fit-content" },
+  roiOfferTitle: { fontSize:38, fontWeight:700, color:"#ffffff", lineHeight:1.3, margin:0 },
+  roiOfferDesc: { fontSize:18, color:"#cccccc", lineHeight:1.8, margin:0 },
+  roiOfferFeatures: { display:"flex", flexDirection:"column", gap:10, marginTop:8 },
+  roiOfferFeat: { fontSize:16, color:"#ffffff", paddingLeft:4 },
+  roiOfferRight: { position:"sticky", top:100 },
+  roiPriceCard: { background:"#0f0a1a", border:"2px solid #ff2a2a", borderRadius:20, padding:"36px 32px", display:"flex", flexDirection:"column", gap:8, boxShadow:"0 0 40px rgba(255,42,42,0.15)" },
+  roiPriceTag: { fontSize:13, color:"#ff2a2a", textTransform:"uppercase", letterSpacing:2, fontWeight:700 },
+  roiPriceAmount: { fontSize:42, fontWeight:700, color:"#ffffff", lineHeight:1.1 },
+  roiPriceSub: { fontSize:14, color:"#666", marginBottom:8 },
+  roiDivider: { height:1, background:"#2a1f4a", margin:"12px 0" },
+  roiBtn: { marginTop:16, background:"linear-gradient(135deg, #ff2a2a, #c00000)", border:"none", color:"#ffffff", borderRadius:12, padding:"16px", fontSize:17, fontWeight:700, cursor:"pointer", fontFamily:"Palatino Linotype, serif", letterSpacing:1 },
+  roiMystery: { background:"#0a0612", border:"1px dashed #ff2a2a", borderRadius:14, padding:"24px", marginTop:8 },
+  roiMysteryTitle: { fontSize:20, fontWeight:700, color:"#ff2a2a", marginBottom:12, letterSpacing:1 },
+  roiMysteryDesc: { fontSize:16, color:"#aaaaaa", lineHeight:1.7, marginBottom:10 },
+  roiMysteryHint: { background:"#1a0f2e", borderRadius:10, padding:"16px", textAlign:"center", fontSize:16, color:"#cccccc", lineHeight:1.8, marginTop:12 },
   counterBox: { background:"#0f0a1a", border:"2px solid #ff2a2a", borderRadius:20, padding:"32px", textAlign:"center", marginBottom:48 },
   counterTitle: { fontSize:17, color:"#aaaaaa", marginBottom:4 },
   counterTime: { fontSize:60, fontWeight:700, color:"#ffffff", fontFamily:"monospace", letterSpacing:4, margin:"16px 0 8px" },
