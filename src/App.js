@@ -416,6 +416,8 @@ export default function Ymaginai() {
           <SectionLabel text="Oferta" />
           <p style={s.introText}>
             Model subskrypcyjny. Płacisz raz za wdrożenie, potem miesięcznie za system który pracuje na Twój biznes.
+            <br /><br />
+            <em style={s.em}>Formularze czytam dwa razy w tygodniu. Reszta czasu jest zajęta. Tak to działa.</em>
           </p>
           <div style={s.cardsRow}>
             {SERVICES.map((srv, i) => (
@@ -427,7 +429,7 @@ export default function Ymaginai() {
                 <div style={s.cardSub}>{srv.sub}</div>
                 <div style={s.cardDiv} />
                 {srv.features.map((f, j) => <div key={j} style={s.cardFeat}>✦ {f}</div>)}
-                <div style={s.cardRes}>⏱ {srv.response}</div>
+
                 {srv.note && <div style={s.cardNote}>{srv.note}</div>}
                 <button style={{ ...s.cardBtn, ...(srv.highlight ? s.cardBtnHL : {}) }}
                   onClick={() => scrollTo("kontakt")}>
@@ -516,9 +518,12 @@ export default function Ymaginai() {
                 <em style={{ color: "#7c3aed" }}>Reszta czasu jest zajęta. Tak to działa.</em>
               </p>
               <div style={s.contactInfo}>
-                {["Potrzebny NIP firmy", "Tylko firmy (sektor prywatny i publiczny)", "Odpowiedź w ciągu 72h od dnia odczytu"].map((t, i) => (
+                {["Potrzebny NIP firmy", "Tylko firmy (sektor prywatny i publiczny)"].map((t, i) => (
                   <div key={i} style={s.contactInfoItem}>✦ {t}</div>
                 ))}
+                <div style={{...s.contactInfoItem, color:"#ff2a2a", borderTop:"1px solid #2a1f4a", paddingTop:12, marginTop:4}}>
+                  ⚡ Fast Track – priorytetowe rozpatrzenie w 24h. Zaznacz w formularzu. Wycena indywidualna.
+                </div>
               </div>
             </div>
             <div>
