@@ -382,6 +382,8 @@ const PROCESS_STEPS = [
 function ProcessTimeline() {
   const [activeStep, setActiveStep] = useState(null);
   const [counter, setCounter] = useState(0);
+  const [workers, setWorkers] = useState(5);
+  const [rate, setRate] = useState(50);
   const counterRef = useRef(null);
 
   useEffect(() => {
@@ -394,22 +396,36 @@ function ProcessTimeline() {
   const hours = Math.floor(counter / 3600);
   const minutes = Math.floor((counter % 3600) / 60);
   const seconds = counter % 60;
-  const moneylost = (counter * 0.014).toFixed(2); // ~50 PLN/hour
-
+  const moneylost = (counter * (rate / 3600) * workers).toFixed(2);
   const pad = n => String(n).padStart(2, "0");
 
   return (
     <div style={{ maxWidth:800, margin:"0 auto" }}>
 
+      {/* Calculator inputs */}
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:20, marginBottom:24 }}>
+        <div style={s.calcBox}>
+          <label style={s.calcLabel}>Liczba pracowników w firmie</label>
+          <input type="number" min="1" max="1000" value={workers}
+            onChange={e => setWorkers(Math.max(1, parseInt(e.target.value)||1))}
+            style={s.calcInput} />
+        </div>
+        <div style={s.calcBox}>
+          <label style={s.calcLabel}>Średnia stawka godzinowa (zł)</label>
+          <input type="number" min="20" max="500" value={rate}
+            onChange={e => setRate(Math.max(20, parseInt(e.target.value)||20))}
+            style={s.calcInput} />
+        </div>
+      </div>
+
       {/* Live counter */}
       <div style={s.counterBox}>
-        <div style={s.counterTitle}>⏱ Czas który Twoja firma traci na ręczne procesy</div>
-        <div style={s.counterTitle}>odkąd jesteś na tej stronie:</div>
+        <div style={s.counterTitle}>⏱ Twoja firma traci odkąd jesteś na tej stronie:</div>
         <div style={s.counterTime}>{pad(hours)}:{pad(minutes)}:{pad(seconds)}</div>
         <div style={s.counterMoney}>
           ≈ <span style={{ color:"#ff2a2a", fontWeight:700 }}>{moneylost} zł</span> stracone bezpowrotnie
         </div>
-        <div style={s.counterNote}>*szacunek przy koszcie godziny pracy 50 zł</div>
+        <div style={s.counterNote}>przy {workers} pracownikach × {rate} zł/h</div>
       </div>
 
       {/* Steps */}
@@ -678,11 +694,14 @@ export default function Ymaginai() {
                 "Potrafisz czekać na odpowiedź 48–72 godziny"].map((t, i) => (
                 <div key={i} style={s.forItemYes}>{t}</div>
               ))}
+              <div style={{...s.forItemYes, borderLeft:"3px solid #ff2a2a"}}>
+                Myślisz że Twoja firma jest za mała<br/>
+                <em style={{color:"#ff2a2a"}}>– mali rosną najszybciej. Mam dla Ciebie coś czego nie ma w cenniku.</em>
+              </div>
             </div>
             <div style={s.forCard}>
               <div style={s.forCardTitleNo}>✗ To nie jest dla Ciebie jeśli...</div>
               {[
-                ["Myślisz że Twoja firma jest za mała", "– mali rosną najszybciej. Mam dla Ciebie coś czego nie ma w cenniku."],
                 ["Szukasz kogoś kto odbiera telefon o 18:00", "– to nie ja"],
                 ["Chcesz efektów jutro", "– zamknij tę stronę"],
                 ["Myślisz że to za drogie", "– policz ile kosztuje Cię jedna godzina Twojego czasu"],
@@ -794,7 +813,9 @@ const s = {
   secLight: { position: "relative", zIndex: 1, background: "#f8f6ff", padding: "100px 0" },
   secInner: { maxWidth: 1100, margin: "0 auto", padding: "0 48px" },
 
-  bodyText: { fontSize: 18, color: "#dddddd", lineHeight: 1.9, marginBottom: 20 },
+  bodyText: { fontSize: 20, color: "#dddddd", lineHeight: 1.9, marginBottom: 20 },
+  white: { color: "#ffffff", fontWeight: 700 },
+  introText: { fontSize: 20, color: "#cccccc", lineHeight: 1.8, marginBottom: 48, textAlign: "center" },
   white: { color: "#ffffff", fontWeight: 700 },
   introText: { fontSize: 18, color: "#cccccc", lineHeight: 1.8, marginBottom: 48, textAlign: "center" },
 
@@ -823,7 +844,7 @@ const s = {
   cardPrice: { fontSize: 38, fontWeight: 700, color: "#ffffff" },
   cardSub: { fontSize: 16, color: "#aaaaaa" },
   cardDiv: { height: 1, background: "#2a1f4a", margin: "10px 0" },
-  cardFeat: { fontSize: 15, color: "#ffffff", marginBottom: 6 },
+  cardFeat: { fontSize: 16, color: "#ffffff", marginBottom: 6 },
   cardRes: { fontSize: 14, color: "#aaaaaa" },
   cardNote: { fontSize: 14, color: "#c084fc", fontStyle: "italic", lineHeight: 1.6 },
   cardBtn: { background: "transparent", border: "1px solid #a855f7", color: "#ffffff", borderRadius: 10, padding: "14px", fontSize: 15, cursor: "pointer", fontFamily: "inherit", marginTop: 12 },
@@ -837,19 +858,22 @@ const s = {
   demoBtn: { background: "transparent", border: "2px solid #a855f7", color: "#7c3aed", borderRadius: 8, padding: "10px 24px", fontSize: 15, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 },
   portfolioNote: { fontSize: 16, color: "#666666", fontStyle: "italic", textAlign: "center", lineHeight: 1.8 },
   counterBox: { background:"#0f0a1a", border:"2px solid #ff2a2a", borderRadius:20, padding:"32px", textAlign:"center", marginBottom:48 },
-  counterTitle: { fontSize:15, color:"#aaaaaa", marginBottom:4 },
-  counterTime: { fontSize:56, fontWeight:700, color:"#ffffff", fontFamily:"monospace", letterSpacing:4, margin:"16px 0 8px" },
-  counterMoney: { fontSize:20, color:"#cccccc", marginBottom:8 },
-  counterNote: { fontSize:12, color:"#555555", fontStyle:"italic" },
+  counterTitle: { fontSize:17, color:"#aaaaaa", marginBottom:4 },
+  counterTime: { fontSize:60, fontWeight:700, color:"#ffffff", fontFamily:"monospace", letterSpacing:4, margin:"16px 0 8px" },
+  counterMoney: { fontSize:22, color:"#cccccc", marginBottom:8 },
+  counterNote: { fontSize:14, color:"#555555", fontStyle:"italic" },
+  calcBox: { background:"#0f0a1a", border:"1px solid #2a1f4a", borderRadius:12, padding:"20px 24px" },
+  calcLabel: { display:"block", fontSize:14, color:"#aaaaaa", marginBottom:10, letterSpacing:0.5 },
+  calcInput: { width:"100%", background:"#1a0f2e", border:"1px solid #a855f7", borderRadius:8, padding:"12px 16px", fontSize:22, fontWeight:700, color:"#ffffff", fontFamily:"Palatino Linotype, serif", outline:"none", boxSizing:"border-box" },
   stepsWrap: { display:"flex", flexDirection:"column", gap:0, marginBottom:40 },
-  processBottom: { textAlign:"center", fontSize:17, color:"#aaaaaa", lineHeight:1.8, fontStyle:"italic" },
+  processBottom: { textAlign:"center", fontSize:18, color:"#aaaaaa", lineHeight:1.8, fontStyle:"italic" },
 
   forGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32, marginBottom: 60 },
   forCard: { background: "#0f0a1a", border: "1px solid #2a1f4a", borderRadius: 16, padding: "36px 32px" },
   forCardTitle: { fontSize: 16, fontWeight: 700, color: "#a855f7", marginBottom: 28, letterSpacing: 1 },
   forCardTitleNo: { fontSize: 16, fontWeight: 700, color: "#ffffff", marginBottom: 28, letterSpacing: 1 },
-  forItemYes: { fontSize: 16, color: "#ffffff", marginBottom: 16, paddingLeft: 18, borderLeft: "3px solid #a855f7", lineHeight: 1.6 },
-  forItemNo: { fontSize: 16, color: "#aaaaaa", marginBottom: 20, paddingLeft: 18, borderLeft: "3px solid #2a1f4a", lineHeight: 1.6 },
+  forItemYes: { fontSize: 18, color: "#ffffff", marginBottom: 16, paddingLeft: 18, borderLeft: "3px solid #a855f7", lineHeight: 1.6 },
+  forItemNo: { fontSize: 18, color: "#aaaaaa", marginBottom: 20, paddingLeft: 18, borderLeft: "3px solid #2a1f4a", lineHeight: 1.6 },
   forSub: { fontSize: 14, color: "#c084fc" },
   forBottom: { textAlign: "center", display: "flex", alignItems: "center", justifyContent: "center", gap: 32, flexWrap: "wrap" },
   forBottomText: { fontSize: 22, color: "#ffffff", fontStyle: "italic" },
@@ -858,7 +882,7 @@ const s = {
   contactGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64 },
   contactLeft: {},
   contactTitle: { fontSize: 30, fontWeight: 700, color: "#111111", marginBottom: 24 },
-  contactText: { fontSize: 18, color: "#333333", lineHeight: 1.8, marginBottom: 18 },
+  contactText: { fontSize: 19, color: "#333333", lineHeight: 1.8, marginBottom: 18 },
   contactInfo: { background: "#ede9fe", borderRadius: 12, padding: "24px", marginTop: 28 },
   contactInfoItem: { fontSize: 16, color: "#111111", marginBottom: 12 },
   tallyCard: { background: "#080810", border: "2px solid #a855f7", borderRadius: 20, padding: "48px 36px", textAlign: "center" },
