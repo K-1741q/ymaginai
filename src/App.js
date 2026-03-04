@@ -485,7 +485,7 @@ export default function Ymaginai() {
             <div style={s.forCard}>
               <div style={s.forCardTitleNo}>✗ To nie jest dla Ciebie jeśli...</div>
               {[
-                ["Myślisz że Twoja firma jest za mała", "– masz rację, to nie dla Ciebie"],
+                ["Myślisz że Twoja firma jest za mała", "– mali rosną najszybciej. Mam dla Ciebie coś czego nie ma w cenniku."],
                 ["Szukasz kogoś kto odbiera telefon o 18:00", "– to nie ja"],
                 ["Chcesz efektów jutro", "– zamknij tę stronę"],
                 ["Myślisz że to za drogie", "– policz ile kosztuje Cię jedna godzina Twojego czasu"],
