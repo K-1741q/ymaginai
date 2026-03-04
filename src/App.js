@@ -104,129 +104,146 @@ function AnimatedDots() {
   return <canvas ref={canvasRef} style={{ position:"fixed", top:0, left:0, width:"100%", height:"100%", zIndex:0, pointerEvents:"none" }} />;
 }
 
-const EDU_COLORS = ["#a855f7","#7c3aed","#ec4899","#f43f5e","#f97316","#eab308","#22c55e","#06b6d4"];
-
+const EDU_COLORS = ["#e84393","#f97316","#eab308","#22c55e","#06b6d4","#6366f1","#a855f7","#ec4899"];
 const EDU_ICONS = ["🏥","📚","⚠️","🏛️","💼","🥗","🧠","📱"];
 
-// Tree layout: 4 branches left, 4 right
-const BRANCH_CONFIG = [
-  // left side (indices 0-3), right side (4-7)
-  { side:"left",  x:80,  y:80  },
-  { side:"left",  x:60,  y:170 },
-  { side:"left",  x:70,  y:260 },
-  { side:"left",  x:85,  y:350 },
-  { side:"right", x:420, y:80  },
-  { side:"right", x:440, y:170 },
-  { side:"right", x:430, y:260 },
-  { side:"right", x:415, y:350 },
+// Balloon positions: x from center (250), y from top
+const BALLOONS = [
+  { x: 80,  y: 60,  r: 58 },  // 0 - far left low
+  { x: 155, y: 30,  r: 52 },  // 1 - left mid
+  { x: 100, y: 155, r: 48 },  // 2 - left low
+  { x: 195, y: 110, r: 44 },  // 3 - center left
+  { x: 310, y: 110, r: 44 },  // 4 - center right
+  { x: 355, y: 30,  r: 52 },  // 5 - right mid
+  { x: 400, y: 155, r: 48 },  // 6 - right low
+  { x: 420, y: 60,  r: 58 },  // 7 - far right low
 ];
 
-const TRUNK_X = 250;
-const TRUNK_TOP = 40;
-const TRUNK_BOTTOM = 400;
+const TRUNK_CX = 250;
 
 function EducationWheel() {
   const [hovered, setHovered] = useState(null);
 
-  const branchEnd = (cfg) => {
-    return { x: cfg.x + (cfg.side === "left" ? 60 : -60), y: cfg.y };
-  };
-
-  const trunkY = (cfg) => cfg.y;
+  // Stem base Y (bottom of balloon circle)
+  const stemBase = (b) => b.y + b.r;
+  // Trunk join Y for each balloon
+  const trunkJoin = (b) => Math.min(280, stemBase(b) + 40 + Math.abs(b.x - TRUNK_CX) * 0.3);
 
   return (
     <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:8 }}>
-      <svg width={500} height={440} style={{ overflow:"visible" }}>
+      <svg width={500} height={420} style={{ overflow:"visible" }}>
+        <defs>
+          {EDU_COLORS.map((c, i) => (
+            <radialGradient key={i} id={`grad${i}`} cx="40%" cy="35%" r="60%">
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.25" />
+              <stop offset="100%" stopColor={c} stopOpacity="1" />
+            </radialGradient>
+          ))}
+          <linearGradient id="trunkGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#a855f7" stopOpacity="0.8" />
+            <stop offset="100%" stopColor="#4c1d95" stopOpacity="0.3" />
+          </linearGradient>
+        </defs>
+
         {/* Trunk */}
-        <line x1={TRUNK_X} y1={TRUNK_TOP} x2={TRUNK_X} y2={TRUNK_BOTTOM}
-          stroke="#a855f7" strokeWidth="4" strokeLinecap="round" opacity="0.5" />
+        <rect x={TRUNK_CX - 6} y={240} width={12} height={140} rx={6}
+          fill="url(#trunkGrad)" />
 
-        {/* Root glow */}
-        <ellipse cx={TRUNK_X} cy={TRUNK_BOTTOM+10} rx={40} ry={8} fill="#a855f7" opacity="0.15" />
+        {/* Roots */}
+        {[-60,-35,-10,10,35,60].map((dx,i) => (
+          <path key={i}
+            d={`M ${TRUNK_CX} 370 Q ${TRUNK_CX + dx*0.6} 385 ${TRUNK_CX + dx} 395`}
+            fill="none" stroke="#4c1d95" strokeWidth="3" strokeOpacity="0.3" strokeLinecap="round" />
+        ))}
 
-        {/* Crown */}
-        <circle cx={TRUNK_X} cy={TRUNK_TOP} r={18} fill="#a855f7" opacity="0.2" />
-        <text x={TRUNK_X} y={TRUNK_TOP-28} textAnchor="middle" fill="#a855f7" fontSize="13"
-          fontWeight="700" fontFamily="Palatino Linotype, serif" letterSpacing="2">WIEDZA</text>
+        {/* Ground label */}
+        <text x={TRUNK_CX} y={412} textAnchor="middle" fill="#6366f1" fontSize="11"
+          fontFamily="Palatino Linotype, serif" letterSpacing="3" opacity="0.6">WIEDZA</text>
 
-        {EDUCATION.map((e, i) => {
-          const cfg = BRANCH_CONFIG[i];
-          const bend = branchEnd(cfg);
-          const ty = trunkY(cfg);
+        {/* Stems from trunk to balloons */}
+        {BALLOONS.map((b, i) => {
+          const bx = b.x;
+          const by = stemBase(b);
+          const tj = trunkJoin(b);
           const isHov = hovered === i;
-          const color = EDU_COLORS[i];
-
-          // Branch path: from trunk to node
-          const branchPath = cfg.side === "left"
-            ? `M ${TRUNK_X} ${ty} C ${TRUNK_X-60} ${ty} ${bend.x+30} ${bend.y} ${bend.x} ${bend.y}`
-            : `M ${TRUNK_X} ${ty} C ${TRUNK_X+60} ${ty} ${bend.x-30} ${bend.y} ${bend.x} ${bend.y}`;
-
-          const nodeX = cfg.side === "left" ? cfg.x - 10 : cfg.x + 10;
-          const nodeY = cfg.y;
-
           return (
-            <g key={i} style={{ cursor:"pointer" }}
-              onMouseEnter={() => setHovered(i)}
-              onMouseLeave={() => setHovered(null)}>
-              {/* Branch line */}
-              <path d={branchPath} fill="none"
-                stroke={isHov ? color : "#3a2a5a"}
-                strokeWidth={isHov ? 3 : 2}
-                strokeLinecap="round"
-                style={{ transition:"stroke 0.2s, stroke-width 0.2s" }} />
-
-              {/* Node circle */}
-              <circle cx={nodeX} cy={nodeY} r={isHov ? 26 : 22}
-                fill={isHov ? color : "#1a0f2e"}
-                stroke={color} strokeWidth="2"
-                style={{ transition:"all 0.2s" }} />
-
-              {/* Icon */}
-              <text x={nodeX} y={nodeY+1} textAnchor="middle" dominantBaseline="middle"
-                fontSize={isHov ? "16" : "14"} style={{ transition:"font-size 0.2s" }}>
-                {EDU_ICONS[i]}
-              </text>
-
-              {/* Label */}
-              {cfg.side === "left" ? (
-                <text x={nodeX - 32} y={nodeY} textAnchor="end" dominantBaseline="middle"
-                  fill={isHov ? "#ffffff" : "#aaaaaa"} fontSize="12" fontWeight={isHov ? "700" : "400"}
-                  fontFamily="Palatino Linotype, serif"
-                  style={{ transition:"all 0.2s" }}>
-                  {e.field.length > 22 ? e.field.substring(0,22)+"…" : e.field}
-                </text>
-              ) : (
-                <text x={nodeX + 32} y={nodeY} textAnchor="start" dominantBaseline="middle"
-                  fill={isHov ? "#ffffff" : "#aaaaaa"} fontSize="12" fontWeight={isHov ? "700" : "400"}
-                  fontFamily="Palatino Linotype, serif"
-                  style={{ transition:"all 0.2s" }}>
-                  {e.field.length > 22 ? e.field.substring(0,22)+"…" : e.field}
-                </text>
-              )}
-            </g>
+            <path key={i}
+              d={`M ${TRUNK_CX} ${tj} Q ${bx} ${tj} ${bx} ${by}`}
+              fill="none"
+              stroke={isHov ? EDU_COLORS[i] : "#c4b5fd"}
+              strokeWidth={isHov ? 3 : 2}
+              strokeOpacity={isHov ? 1 : 0.5}
+              strokeLinecap="round"
+              style={{ transition:"all 0.3s" }} />
           );
         })}
 
-        {/* Central "8" badge */}
-        <circle cx={TRUNK_X} cy={220} r={28} fill="#080810" stroke="#a855f7" strokeWidth="2" />
-        <text x={TRUNK_X} y={215} textAnchor="middle" fill="#a855f7" fontSize="20" fontWeight="700"
-          fontFamily="Palatino Linotype, serif">8</text>
-        <text x={TRUNK_X} y={232} textAnchor="middle" fill="#666" fontSize="9"
-          fontFamily="Palatino Linotype, serif">kierunków</text>
+        {/* Balloons */}
+        {BALLOONS.map((b, i) => {
+          const isHov = hovered === i;
+          const scale = isHov ? 1.12 : 1;
+          return (
+            <g key={i}
+              style={{ cursor:"pointer", transformOrigin:`${b.x}px ${b.y}px`,
+                transform:`scale(${scale})`, transition:"transform 0.25s ease" }}
+              onMouseEnter={() => setHovered(i)}
+              onMouseLeave={() => setHovered(null)}>
+
+              {/* Shadow */}
+              <ellipse cx={b.x} cy={b.y + b.r + 6} rx={b.r * 0.7} ry={8}
+                fill="#000000" opacity={isHov ? 0.12 : 0.06}
+                style={{ transition:"all 0.25s" }} />
+
+              {/* Main circle */}
+              <circle cx={b.x} cy={b.y} r={b.r}
+                fill={`url(#grad${i})`}
+                stroke={isHov ? "#ffffff" : EDU_COLORS[i]}
+                strokeWidth={isHov ? 3 : 1.5}
+                strokeOpacity={isHov ? 0.9 : 0.6}
+                style={{ transition:"all 0.25s", filter: isHov ? `drop-shadow(0 4px 16px ${EDU_COLORS[i]}88)` : "none" }} />
+
+              {/* Shine */}
+              <ellipse cx={b.x - b.r*0.25} cy={b.y - b.r*0.3} rx={b.r*0.22} ry={b.r*0.14}
+                fill="#ffffff" opacity={0.35} transform={`rotate(-30, ${b.x - b.r*0.25}, ${b.y - b.r*0.3})`} />
+
+              {/* Icon */}
+              <text x={b.x} y={b.y - 10} textAnchor="middle" dominantBaseline="middle"
+                fontSize={b.r * 0.55} style={{ userSelect:"none" }}>
+                {EDU_ICONS[i]}
+              </text>
+
+              {/* Number */}
+              <text x={b.x} y={b.y + b.r*0.38} textAnchor="middle" dominantBaseline="middle"
+                fill="#ffffff" fontSize={b.r * 0.28} fontWeight="700" opacity="0.9"
+                fontFamily="Palatino Linotype, serif">
+                0{i+1}
+              </text>
+            </g>
+          );
+        })}
       </svg>
 
       {/* Tooltip */}
-      <div style={{ height:64, display:"flex", alignItems:"center", justifyContent:"center", width:"100%" }}>
+      <div style={{ height:68, display:"flex", alignItems:"center", justifyContent:"center", width:"100%" }}>
         {hovered !== null ? (
-          <div style={{ background:"#1a0f2e", border:`2px solid ${EDU_COLORS[hovered]}`, borderRadius:12,
-            padding:"12px 24px", textAlign:"center", maxWidth:340 }}>
-            <div style={{ fontSize:11, color:EDU_COLORS[hovered], textTransform:"uppercase", letterSpacing:1, marginBottom:4 }}>
+          <div style={{ background:`linear-gradient(135deg, #1a0f2e, #0f0a1a)`,
+            border:`2px solid ${EDU_COLORS[hovered]}`,
+            borderRadius:14, padding:"12px 28px", textAlign:"center", maxWidth:360,
+            boxShadow:`0 4px 24px ${EDU_COLORS[hovered]}44` }}>
+            <div style={{ fontSize:11, color:EDU_COLORS[hovered], textTransform:"uppercase",
+              letterSpacing:2, marginBottom:5, fontFamily:"Palatino Linotype, serif" }}>
               {EDUCATION[hovered].degree}
             </div>
-            <div style={{ fontSize:15, color:"#ffffff", fontWeight:700 }}>{EDUCATION[hovered].field}</div>
+            <div style={{ fontSize:16, color:"#ffffff", fontWeight:700,
+              fontFamily:"Palatino Linotype, serif" }}>
+              {EDUCATION[hovered].field}
+            </div>
           </div>
         ) : (
-          <div style={{ fontSize:13, color:"#555", fontStyle:"italic" }}>Najedź na gałąź aby zobaczyć kierunek</div>
+          <div style={{ fontSize:13, color:"#555", fontStyle:"italic",
+            fontFamily:"Palatino Linotype, serif" }}>
+            Najedź na balon aby zobaczyć kierunek studiów
+          </div>
         )}
       </div>
     </div>
