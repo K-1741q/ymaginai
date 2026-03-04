@@ -106,69 +106,129 @@ function AnimatedDots() {
 
 const EDU_COLORS = ["#a855f7","#7c3aed","#ec4899","#f43f5e","#f97316","#eab308","#22c55e","#06b6d4"];
 
+const EDU_ICONS = ["🏥","📚","⚠️","🏛️","💼","🥗","🧠","📱"];
+
+// Tree layout: 4 branches left, 4 right
+const BRANCH_CONFIG = [
+  // left side (indices 0-3), right side (4-7)
+  { side:"left",  x:80,  y:80  },
+  { side:"left",  x:60,  y:170 },
+  { side:"left",  x:70,  y:260 },
+  { side:"left",  x:85,  y:350 },
+  { side:"right", x:420, y:80  },
+  { side:"right", x:440, y:170 },
+  { side:"right", x:430, y:260 },
+  { side:"right", x:415, y:350 },
+];
+
+const TRUNK_X = 250;
+const TRUNK_TOP = 40;
+const TRUNK_BOTTOM = 400;
+
 function EducationWheel() {
   const [hovered, setHovered] = useState(null);
-  const size = 340;
-  const cx = size / 2;
-  const cy = size / 2;
-  const outerR = 130;
-  const innerR = 55;
-  const total = EDUCATION.length;
 
-  const slice = (i) => {
-    const startAngle = (i / total) * 2 * Math.PI - Math.PI / 2;
-    const endAngle = ((i + 1) / total) * 2 * Math.PI - Math.PI / 2;
-    const x1 = cx + outerR * Math.cos(startAngle);
-    const y1 = cy + outerR * Math.sin(startAngle);
-    const x2 = cx + outerR * Math.cos(endAngle);
-    const y2 = cy + outerR * Math.sin(endAngle);
-    const x3 = cx + innerR * Math.cos(endAngle);
-    const y3 = cy + innerR * Math.sin(endAngle);
-    const x4 = cx + innerR * Math.cos(startAngle);
-    const y4 = cy + innerR * Math.sin(startAngle);
-    return `M ${x1} ${y1} A ${outerR} ${outerR} 0 0 1 ${x2} ${y2} L ${x3} ${y3} A ${innerR} ${innerR} 0 0 0 ${x4} ${y4} Z`;
+  const branchEnd = (cfg) => {
+    return { x: cfg.x + (cfg.side === "left" ? 60 : -60), y: cfg.y };
   };
 
-  const labelPos = (i) => {
-    const angle = ((i + 0.5) / total) * 2 * Math.PI - Math.PI / 2;
-    const r = outerR + 28;
-    return { x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) };
-  };
+  const trunkY = (cfg) => cfg.y;
 
   return (
-    <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:16 }}>
-      <svg width={size} height={size} style={{ overflow:"visible" }}>
+    <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:8 }}>
+      <svg width={500} height={440} style={{ overflow:"visible" }}>
+        {/* Trunk */}
+        <line x1={TRUNK_X} y1={TRUNK_TOP} x2={TRUNK_X} y2={TRUNK_BOTTOM}
+          stroke="#a855f7" strokeWidth="4" strokeLinecap="round" opacity="0.5" />
+
+        {/* Root glow */}
+        <ellipse cx={TRUNK_X} cy={TRUNK_BOTTOM+10} rx={40} ry={8} fill="#a855f7" opacity="0.15" />
+
+        {/* Crown */}
+        <circle cx={TRUNK_X} cy={TRUNK_TOP} r={18} fill="#a855f7" opacity="0.2" />
+        <text x={TRUNK_X} y={TRUNK_TOP-28} textAnchor="middle" fill="#a855f7" fontSize="13"
+          fontWeight="700" fontFamily="Palatino Linotype, serif" letterSpacing="2">WIEDZA</text>
+
         {EDUCATION.map((e, i) => {
-          const pos = labelPos(i);
+          const cfg = BRANCH_CONFIG[i];
+          const bend = branchEnd(cfg);
+          const ty = trunkY(cfg);
           const isHov = hovered === i;
-          const midAngle = ((i + 0.5) / total) * 2 * Math.PI - Math.PI / 2;
-          const offset = isHov ? 8 : 0;
+          const color = EDU_COLORS[i];
+
+          // Branch path: from trunk to node
+          const branchPath = cfg.side === "left"
+            ? `M ${TRUNK_X} ${ty} C ${TRUNK_X-60} ${ty} ${bend.x+30} ${bend.y} ${bend.x} ${bend.y}`
+            : `M ${TRUNK_X} ${ty} C ${TRUNK_X+60} ${ty} ${bend.x-30} ${bend.y} ${bend.x} ${bend.y}`;
+
+          const nodeX = cfg.side === "left" ? cfg.x - 10 : cfg.x + 10;
+          const nodeY = cfg.y;
+
           return (
-            <g key={i}
-              style={{ cursor:"pointer", transform: isHov ? `translate(${Math.cos(midAngle)*offset}px, ${Math.sin(midAngle)*offset}px)` : "none", transition:"transform 0.2s" }}
+            <g key={i} style={{ cursor:"pointer" }}
               onMouseEnter={() => setHovered(i)}
               onMouseLeave={() => setHovered(null)}>
-              <path d={slice(i)} fill={EDU_COLORS[i]} opacity={isHov ? 1 : 0.75} stroke="#080810" strokeWidth="2" />
-              <text x={pos.x} y={pos.y} textAnchor="middle" dominantBaseline="middle"
-                fill="#ffffff" fontSize="10" fontWeight="600" fontFamily="Palatino Linotype, serif">
-                {i + 1}
+              {/* Branch line */}
+              <path d={branchPath} fill="none"
+                stroke={isHov ? color : "#3a2a5a"}
+                strokeWidth={isHov ? 3 : 2}
+                strokeLinecap="round"
+                style={{ transition:"stroke 0.2s, stroke-width 0.2s" }} />
+
+              {/* Node circle */}
+              <circle cx={nodeX} cy={nodeY} r={isHov ? 26 : 22}
+                fill={isHov ? color : "#1a0f2e"}
+                stroke={color} strokeWidth="2"
+                style={{ transition:"all 0.2s" }} />
+
+              {/* Icon */}
+              <text x={nodeX} y={nodeY+1} textAnchor="middle" dominantBaseline="middle"
+                fontSize={isHov ? "16" : "14"} style={{ transition:"font-size 0.2s" }}>
+                {EDU_ICONS[i]}
               </text>
+
+              {/* Label */}
+              {cfg.side === "left" ? (
+                <text x={nodeX - 32} y={nodeY} textAnchor="end" dominantBaseline="middle"
+                  fill={isHov ? "#ffffff" : "#aaaaaa"} fontSize="12" fontWeight={isHov ? "700" : "400"}
+                  fontFamily="Palatino Linotype, serif"
+                  style={{ transition:"all 0.2s" }}>
+                  {e.field.length > 22 ? e.field.substring(0,22)+"…" : e.field}
+                </text>
+              ) : (
+                <text x={nodeX + 32} y={nodeY} textAnchor="start" dominantBaseline="middle"
+                  fill={isHov ? "#ffffff" : "#aaaaaa"} fontSize="12" fontWeight={isHov ? "700" : "400"}
+                  fontFamily="Palatino Linotype, serif"
+                  style={{ transition:"all 0.2s" }}>
+                  {e.field.length > 22 ? e.field.substring(0,22)+"…" : e.field}
+                </text>
+              )}
             </g>
           );
         })}
-        <circle cx={cx} cy={cy} r={innerR} fill="#080810" />
-        <text x={cx} y={cy - 10} textAnchor="middle" fill="#a855f7" fontSize="22" fontWeight="700" fontFamily="Palatino Linotype, serif">8</text>
-        <text x={cx} y={cy + 12} textAnchor="middle" fill="#888" fontSize="11" fontFamily="Palatino Linotype, serif">kierunków</text>
+
+        {/* Central "8" badge */}
+        <circle cx={TRUNK_X} cy={220} r={28} fill="#080810" stroke="#a855f7" strokeWidth="2" />
+        <text x={TRUNK_X} y={215} textAnchor="middle" fill="#a855f7" fontSize="20" fontWeight="700"
+          fontFamily="Palatino Linotype, serif">8</text>
+        <text x={TRUNK_X} y={232} textAnchor="middle" fill="#666" fontSize="9"
+          fontFamily="Palatino Linotype, serif">kierunków</text>
       </svg>
-      {hovered !== null && (
-        <div style={{ background:"#1a0f2e", border:`2px solid ${EDU_COLORS[hovered]}`, borderRadius:12, padding:"14px 20px", textAlign:"center", maxWidth:300 }}>
-          <div style={{ fontSize:12, color:EDU_COLORS[hovered], textTransform:"uppercase", letterSpacing:1, marginBottom:4 }}>{EDUCATION[hovered].degree}</div>
-          <div style={{ fontSize:16, color:"#ffffff", fontWeight:700 }}>{EDUCATION[hovered].field}</div>
-        </div>
-      )}
-      {hovered === null && (
-        <div style={{ fontSize:13, color:"#666", fontStyle:"italic" }}>Najedź na segment aby zobaczyć kierunek</div>
-      )}
+
+      {/* Tooltip */}
+      <div style={{ height:64, display:"flex", alignItems:"center", justifyContent:"center", width:"100%" }}>
+        {hovered !== null ? (
+          <div style={{ background:"#1a0f2e", border:`2px solid ${EDU_COLORS[hovered]}`, borderRadius:12,
+            padding:"12px 24px", textAlign:"center", maxWidth:340 }}>
+            <div style={{ fontSize:11, color:EDU_COLORS[hovered], textTransform:"uppercase", letterSpacing:1, marginBottom:4 }}>
+              {EDUCATION[hovered].degree}
+            </div>
+            <div style={{ fontSize:15, color:"#ffffff", fontWeight:700 }}>{EDUCATION[hovered].field}</div>
+          </div>
+        ) : (
+          <div style={{ fontSize:13, color:"#555", fontStyle:"italic" }}>Najedź na gałąź aby zobaczyć kierunek</div>
+        )}
+      </div>
     </div>
   );
 }
