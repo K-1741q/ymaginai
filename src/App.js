@@ -371,6 +371,114 @@ function RadarChart() {
   );
 }
 
+const PROCESS_STEPS = [
+  { icon:"📋", who:"Ty",     color:"#06b6d4", title:"Wypełniasz formularz",        desc:"5 minut Twojego czasu. NIP, struktura firmy, obecne procesy, oczekiwany ROI.", time:"5 min" },
+  { icon:"⚙️", who:"System", color:"#a855f7", title:"Automatyczna analiza wstępna", desc:"System natychmiast ocenia zgłoszenie i przypisuje kategorię pilności.",        time:"chwila" },
+  { icon:"🔍", who:"K..",    color:"#f97316", title:"Czytam i oceniam",             desc:"Przeglądam formularze raz na dwa tygodnie. Każde zgłoszenie analizuję z sześciu perspektyw strategicznych.", time:"do 2 tyg." },
+  { icon:"📊", who:"K..",    color:"#ec4899", title:"Przygotowuję analizę ROI",     desc:"Liczę ile Twoja firma traci miesięcznie na ręcznych procesach i co możesz zyskać po wdrożeniu systemu.", time:"1-2 dni" },
+  { icon:"📬", who:"Ty",     color:"#22c55e", title:"Otrzymujesz decyzję",          desc:"Dostajesz konkretną propozycję współpracy z wyceną i harmonogramem. Albo szczerą informację że nie jestem w stanie pomóc.", time:"gotowe" },
+];
+
+function ProcessTimeline() {
+  const [activeStep, setActiveStep] = useState(null);
+  const [counter, setCounter] = useState(0);
+  const counterRef = useRef(null);
+
+  useEffect(() => {
+    counterRef.current = setInterval(() => {
+      setCounter(c => c + 1);
+    }, 1000);
+    return () => clearInterval(counterRef.current);
+  }, []);
+
+  const hours = Math.floor(counter / 3600);
+  const minutes = Math.floor((counter % 3600) / 60);
+  const seconds = counter % 60;
+  const moneylost = (counter * 0.014).toFixed(2); // ~50 PLN/hour
+
+  const pad = n => String(n).padStart(2, "0");
+
+  return (
+    <div style={{ maxWidth:800, margin:"0 auto" }}>
+
+      {/* Live counter */}
+      <div style={s.counterBox}>
+        <div style={s.counterTitle}>⏱ Czas który Twoja firma traci na ręczne procesy</div>
+        <div style={s.counterTitle}>odkąd jesteś na tej stronie:</div>
+        <div style={s.counterTime}>{pad(hours)}:{pad(minutes)}:{pad(seconds)}</div>
+        <div style={s.counterMoney}>
+          ≈ <span style={{ color:"#ff2a2a", fontWeight:700 }}>{moneylost} zł</span> stracone bezpowrotnie
+        </div>
+        <div style={s.counterNote}>*szacunek przy koszcie godziny pracy 50 zł</div>
+      </div>
+
+      {/* Steps */}
+      <div style={s.stepsWrap}>
+        {PROCESS_STEPS.map((step, i) => {
+          const isActive = activeStep === i;
+          const isLast = i === PROCESS_STEPS.length - 1;
+          return (
+            <div key={i} style={{ display:"flex", flexDirection:"column", alignItems:"center" }}>
+              <div style={{ display:"flex", alignItems:"flex-start", gap:20, width:"100%",
+                cursor:"pointer" }}
+                onClick={() => setActiveStep(isActive ? null : i)}>
+
+                {/* Icon + line */}
+                <div style={{ display:"flex", flexDirection:"column", alignItems:"center", flexShrink:0 }}>
+                  <div style={{ width:56, height:56, borderRadius:"50%",
+                    background: isActive ? step.color : "#1a0f2e",
+                    border:`2px solid ${step.color}`,
+                    display:"flex", alignItems:"center", justifyContent:"center",
+                    fontSize:24, transition:"all 0.3s",
+                    boxShadow: isActive ? `0 0 20px ${step.color}66` : "none" }}>
+                    {step.icon}
+                  </div>
+                  {!isLast && (
+                    <div style={{ width:2, height:40, background:`linear-gradient(${step.color}, ${PROCESS_STEPS[i+1].color})`,
+                      opacity:0.4, marginTop:4 }} />
+                  )}
+                </div>
+
+                {/* Content */}
+                <div style={{ flex:1, paddingTop:12 }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:6 }}>
+                    <span style={{ fontSize:11, color:step.color, fontWeight:700,
+                      textTransform:"uppercase", letterSpacing:1,
+                      background:`${step.color}22`, padding:"2px 10px", borderRadius:20 }}>
+                      {step.who}
+                    </span>
+                    <span style={{ fontSize:11, color:"#666", fontStyle:"italic" }}>{step.time}</span>
+                  </div>
+                  <div style={{ fontSize:18, fontWeight:700, color:"#ffffff", marginBottom:isActive?8:0,
+                    transition:"all 0.3s" }}>
+                    {step.title}
+                  </div>
+                  {isActive && (
+                    <div style={{ fontSize:15, color:"#cccccc", lineHeight:1.7,
+                      borderLeft:`3px solid ${step.color}`, paddingLeft:14,
+                      animation:"fadeIn 0.3s ease" }}>
+                      {step.desc}
+                    </div>
+                  )}
+                </div>
+
+                {/* Expand arrow */}
+                <div style={{ color:step.color, fontSize:18, paddingTop:14, transition:"transform 0.3s",
+                  transform: isActive ? "rotate(180deg)" : "rotate(0deg)" }}>▾</div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div style={s.processBottom}>
+        Każdy dzień bez systemu to koszt który rośnie.<br/>
+        <em style={s.em}>Fast Track – jeśli nie chcesz czekać na kolejne czytanie.</em>
+      </div>
+    </div>
+  );
+}
+
 export default function Ymaginai() {
   const [, setSection] = useState(null);
   const [visible, setVisible] = useState(false);
@@ -515,6 +623,18 @@ export default function Ymaginai() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* PROCESS - dark */}
+      <section style={s.secDark}>
+        <div style={s.secInner}>
+          <SectionLabel text="Jak to działa?" />
+          <p style={{ ...s.introText, maxWidth:680, margin:"0 auto 48px" }}>
+            Zastanawiasz się czemu dwa tygodnie? Bo w tym czasie Twoja firma traci pieniądze robiąc wszystko ręcznie.
+            <br /><em style={s.em}>Zobaczmy ile dokładnie.</em>
+          </p>
+          <ProcessTimeline />
         </div>
       </section>
 
@@ -716,6 +836,13 @@ const s = {
   demoDesc: { fontSize: 16, color: "#555555", marginBottom: 24, lineHeight: 1.6 },
   demoBtn: { background: "transparent", border: "2px solid #a855f7", color: "#7c3aed", borderRadius: 8, padding: "10px 24px", fontSize: 15, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 },
   portfolioNote: { fontSize: 16, color: "#666666", fontStyle: "italic", textAlign: "center", lineHeight: 1.8 },
+  counterBox: { background:"#0f0a1a", border:"2px solid #ff2a2a", borderRadius:20, padding:"32px", textAlign:"center", marginBottom:48 },
+  counterTitle: { fontSize:15, color:"#aaaaaa", marginBottom:4 },
+  counterTime: { fontSize:56, fontWeight:700, color:"#ffffff", fontFamily:"monospace", letterSpacing:4, margin:"16px 0 8px" },
+  counterMoney: { fontSize:20, color:"#cccccc", marginBottom:8 },
+  counterNote: { fontSize:12, color:"#555555", fontStyle:"italic" },
+  stepsWrap: { display:"flex", flexDirection:"column", gap:0, marginBottom:40 },
+  processBottom: { textAlign:"center", fontSize:17, color:"#aaaaaa", lineHeight:1.8, fontStyle:"italic" },
 
   forGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32, marginBottom: 60 },
   forCard: { background: "#0f0a1a", border: "1px solid #2a1f4a", borderRadius: 16, padding: "36px 32px" },
