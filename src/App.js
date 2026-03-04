@@ -72,43 +72,88 @@ function AnimatedDots() {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    const dots = Array.from({ length: 60 }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      r: Math.random() * 2 + 0.5,
-      vx: (Math.random() - 0.5) * 0.3,
-      vy: (Math.random() - 0.5) * 0.3,
-      opacity: Math.random() * 0.4 + 0.1,
-    }));
     let animId;
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    const COLORS = [
+      [168, 85, 247],   // purple
+      [255, 42, 42],    // red
+      [124, 58, 237],   // violet
+      [6, 182, 212],    // cyan
+      [236, 72, 153],   // pink
+    ];
+
+    const dots = Array.from({ length: 80 }, () => {
+      const color = COLORS[Math.floor(Math.random() * COLORS.length)];
+      return {
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 3 + 1,
+        vx: (Math.random() - 0.5) * 0.6,
+        vy: (Math.random() - 0.5) * 0.6,
+        opacity: Math.random() * 0.6 + 0.2,
+        color,
+        pulse: Math.random() * Math.PI * 2,
+        pulseSpeed: 0.02 + Math.random() * 0.03,
+      };
+    });
+
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       dots.forEach(d => {
-        d.x += d.vx; d.y += d.vy;
+        d.x += d.vx;
+        d.y += d.vy;
+        d.pulse += d.pulseSpeed;
         if (d.x < 0 || d.x > canvas.width) d.vx *= -1;
         if (d.y < 0 || d.y > canvas.height) d.vy *= -1;
+
+        const pulsedR = d.r + Math.sin(d.pulse) * 1.2;
+        const [r, g, b] = d.color;
+
+        // Glow effect
+        const grd = ctx.createRadialGradient(d.x, d.y, 0, d.x, d.y, pulsedR * 4);
+        grd.addColorStop(0, `rgba(${r},${g},${b},${d.opacity})`);
+        grd.addColorStop(1, `rgba(${r},${g},${b},0)`);
         ctx.beginPath();
-        ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(168,85,247,${d.opacity})`;
+        ctx.arc(d.x, d.y, pulsedR * 4, 0, Math.PI * 2);
+        ctx.fillStyle = grd;
+        ctx.fill();
+
+        // Core dot
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, pulsedR, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${r},${g},${b},${d.opacity + 0.3})`;
         ctx.fill();
       });
-      dots.forEach((a, i) => dots.slice(i+1).forEach(b => {
-        const dist = Math.hypot(a.x-b.x, a.y-b.y);
-        if (dist < 120) {
+
+      // Connecting lines
+      dots.forEach((a, i) => dots.slice(i + 1).forEach(b => {
+        const dist = Math.hypot(a.x - b.x, a.y - b.y);
+        if (dist < 140) {
+          const alpha = 0.12 * (1 - dist / 140);
           ctx.beginPath();
           ctx.moveTo(a.x, a.y);
           ctx.lineTo(b.x, b.y);
-          ctx.strokeStyle = `rgba(168,85,247,${0.08*(1-dist/120)})`;
-          ctx.lineWidth = 0.5;
+          ctx.strokeStyle = `rgba(168,85,247,${alpha})`;
+          ctx.lineWidth = 0.6;
           ctx.stroke();
         }
       }));
+
       animId = requestAnimationFrame(draw);
     };
+
     draw();
-    return () => cancelAnimationFrame(animId);
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener("resize", resize);
+    };
   }, []);
   return <canvas ref={canvasRef} style={{ position:"fixed", top:0, left:0, width:"100%", height:"100%", zIndex:0, pointerEvents:"none" }} />;
 }
@@ -411,6 +456,17 @@ function ProcessTimeline() {
   return (
     <div style={{ maxWidth:800, margin:"0 auto" }}>
 
+      {/* Title */}
+      <div style={{ textAlign:"center", marginBottom:36 }}>
+        <div style={{ display:"inline-block", background:"#0f0a1a", border:"1px solid #ff2a2a", color:"#ff2a2a", fontSize:12, letterSpacing:2, padding:"5px 16px", borderRadius:20, marginBottom:14 }}>
+          © Projekt autorski · Wszelkie prawa zastrzeżone
+        </div>
+        <div style={{ fontSize:42, fontWeight:700, color:"#111111", fontFamily:"Palatino Linotype, serif" }}>
+          Ból w liczbach
+        </div>
+        <div style={{ width:50, height:3, background:"#ff2a2a", margin:"12px auto 0", borderRadius:2 }} />
+      </div>
+
       {/* Calculator inputs */}
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:20, marginBottom:24 }}>
         <div style={s.calcBox}>
@@ -707,7 +763,7 @@ export default function Ymaginai() {
             </p>
             <p style={{ fontSize:20, color:"#cccccc", lineHeight:1.9, marginBottom:24 }}>
               Działa na <strong style={{ color:"#ffffff" }}>spotkaniach biznesowych i prezentacjach</strong>. Skuteczne gdy chcesz przekonać zarząd lub kadrę kierowniczą że firma potrzebuje zmiany.
-              <em style={{ color:"#a855f7" }}> Nic tak nie przemawia do szefa jak liczby.</em>
+              <em style={{ color:"#a855f7" }}> Nic tak nie przemawia do szefa jak straty w liczbach.</em>
             </p>
             <p style={{ fontSize:20, color:"#cccccc", lineHeight:1.9, marginBottom:48 }}>
               Dostępne również w modelu subskrypcyjnym – <strong style={{ color:"#ffffff" }}>do stałego użytku</strong> dla Twoich klientów lub kadry zarządzającej.
@@ -869,21 +925,21 @@ const s = {
   navBtn: { background: "transparent", border: "none", color: "#cccccc", fontSize: 14, cursor: "pointer", padding: "8px 16px", borderRadius: 20, letterSpacing: 1, textTransform: "uppercase", fontFamily: "inherit", transition: "all 0.2s" },
 
   hero: { position: "relative", zIndex: 1, textAlign: "center", padding: "0 40px", maxWidth: 1000, margin: "0 auto", minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" },
-  heroTag: { fontSize: 14, color: "#cccccc", letterSpacing: 4, textTransform: "uppercase", marginBottom: 48 },
+  heroTag: { fontSize: 18, color: "#cccccc", letterSpacing: 4, textTransform: "uppercase", marginBottom: 48 },
   heroLogo: { display: "flex", alignItems: "baseline", justifyContent: "center", gap: 10, marginBottom: 48 },
-  heroK: { fontSize: 88, fontWeight: 700, color: "#ffffff", lineHeight: 1 },
-  heroDots: { fontSize: 88, color: "#a855f7", lineHeight: 1 },
-  heroBar: { fontSize: 64, color: "#3a2a5a", margin: "0 8px", lineHeight: 1 },
-  heroBrand: { fontSize: 80, fontWeight: 700, color: "#ffffff", letterSpacing: 4, textTransform: "uppercase", lineHeight: 1 },
-  heroSub: { fontSize: 22, color: "#ffffff", lineHeight: 1.9, marginBottom: 40 },
+  heroK: { fontSize: 110, fontWeight: 700, color: "#ffffff", lineHeight: 1 },
+  heroDots: { fontSize: 110, color: "#a855f7", lineHeight: 1 },
+  heroBar: { fontSize: 80, color: "#3a2a5a", margin: "0 8px", lineHeight: 1 },
+  heroBrand: { fontSize: 110, fontWeight: 700, color: "#ffffff", letterSpacing: 4, textTransform: "uppercase", lineHeight: 1 },
+  heroSub: { fontSize: 26, color: "#ffffff", lineHeight: 1.9, marginBottom: 40 },
   heroY: { background: "#1a0f2e", border: "1px solid #ff2a2a", borderRadius: 16, padding: "28px 40px", marginBottom: 48, display: "inline-block", textAlign: "center" },
   heroYTop: { display: "flex", alignItems: "baseline", justifyContent: "center", gap: 8, marginBottom: 8 },
-  heroYLetter: { fontSize: 72, fontWeight: 700, color: "#ff2a2a", lineHeight: 1, textShadow: "0 0 30px rgba(255,42,42,0.5)" },
-  heroYDash: { fontSize: 24, color: "#ffffff" },
-  heroYTy: { fontSize: 36, fontWeight: 700, color: "#ff2a2a" },
-  heroYMain: { fontSize: 22, color: "#ffffff", fontStyle: "italic", marginBottom: 10 },
-  heroYSub: { fontSize: 15, color: "#aaaaaa", letterSpacing: 1 },
-  heroBtn: { background: "linear-gradient(135deg, #a855f7, #7c3aed)", color: "#ffffff", border: "none", borderRadius: 14, padding: "20px 56px", fontSize: 18, fontWeight: 700, cursor: "pointer", letterSpacing: 1, marginBottom: 60 },
+  heroYLetter: { fontSize: 90, fontWeight: 700, color: "#ff2a2a", lineHeight: 1, textShadow: "0 0 30px rgba(255,42,42,0.5)" },
+  heroYDash: { fontSize: 30, color: "#ffffff" },
+  heroYTy: { fontSize: 48, fontWeight: 700, color: "#ff2a2a" },
+  heroYMain: { fontSize: 28, color: "#ffffff", fontStyle: "italic", marginBottom: 10 },
+  heroYSub: { fontSize: 18, color: "#aaaaaa", letterSpacing: 1 },
+  heroBtn: { background: "linear-gradient(135deg, #a855f7, #7c3aed)", color: "#ffffff", border: "none", borderRadius: 14, padding: "22px 64px", fontSize: 22, fontWeight: 700, cursor: "pointer", letterSpacing: 1, marginBottom: 60 },
   heroScroll: { fontSize: 28, color: "#3a2a5a", animation: "bounce 2s infinite" },
 
   secDark: { position: "relative", zIndex: 1, background: "#080810", padding: "120px 0" },
