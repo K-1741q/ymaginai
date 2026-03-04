@@ -816,8 +816,6 @@ const s = {
   bodyText: { fontSize: 20, color: "#dddddd", lineHeight: 1.9, marginBottom: 20 },
   white: { color: "#ffffff", fontWeight: 700 },
   introText: { fontSize: 20, color: "#cccccc", lineHeight: 1.8, marginBottom: 48, textAlign: "center" },
-  white: { color: "#ffffff", fontWeight: 700 },
-  introText: { fontSize: 18, color: "#cccccc", lineHeight: 1.8, marginBottom: 48, textAlign: "center" },
 
   aboutGrid: { display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: 64, alignItems: "start" },
   aboutText: {},
