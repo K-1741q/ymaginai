@@ -194,8 +194,13 @@ export default function Ymaginai() {
           Razem tworzymy coś czego wcześniej nie było.
         </p>
         <div style={s.heroY}>
-          <span style={s.heroYLetter}>Y</span>
-          <span style={s.heroYText}> – bo to Ty jesteś częścią każdego procesu który tworzymy.</span>
+          <div style={s.heroYTop}>
+            <span style={s.heroYLetter}>Y</span>
+            <span style={s.heroYDash}> – bo to </span>
+            <span style={s.heroYTy}>Ty</span>
+          </div>
+          <div style={s.heroYMain}>jesteś częścią każdego procesu który tworzymy.</div>
+          <div style={s.heroYSub}>Nie jesteś odbiorcą usługi. Jesteś współtwórcą rozwiązania.</div>
         </div>
         <button style={s.heroBtn} onClick={() => scrollTo("kontakt")}>
           Wypełnij formularz ✦
@@ -312,7 +317,9 @@ export default function Ymaginai() {
             ))}
           </div>
           <p style={s.portfolioNote}>
-            Zakres możliwych wdrożeń jest znacznie szerszy – zależy od Twoich potrzeb i branży.
+            Powyższe projekty to <strong style={{color:"#111"}}>prototypy demonstracyjne</strong> – każdy element jest w pełni dostosowywalny.<br />
+            Kolory, nazwa, zabiegi, personel, ceny, struktura – wszystko tworzone pod indywidualne potrzeby klienta.<br />
+            <em>Zakres możliwych wdrożeń jest znacznie szerszy – zależy od Twojej branży i procesów.</em>
           </p>
         </div>
       </section>
@@ -430,9 +437,13 @@ const s = {
   heroBar: { fontSize: 64, color: "#3a2a5a", margin: "0 8px", lineHeight: 1 },
   heroBrand: { fontSize: 80, fontWeight: 700, color: "#ffffff", letterSpacing: 4, textTransform: "uppercase", lineHeight: 1 },
   heroSub: { fontSize: 22, color: "#ffffff", lineHeight: 1.9, marginBottom: 40 },
-  heroY: { background: "#1a0f2e", border: "1px solid #a855f7", borderRadius: 14, padding: "20px 32px", marginBottom: 48, display: "inline-block" },
-  heroYLetter: { fontSize: 24, fontWeight: 700, color: "#a855f7" },
-  heroYText: { fontSize: 18, color: "#ffffff", fontStyle: "italic" },
+  heroY: { background: "#1a0f2e", border: "1px solid #ff2a2a", borderRadius: 16, padding: "28px 40px", marginBottom: 48, display: "inline-block", textAlign: "center" },
+  heroYTop: { display: "flex", alignItems: "baseline", justifyContent: "center", gap: 8, marginBottom: 8 },
+  heroYLetter: { fontSize: 72, fontWeight: 700, color: "#ff2a2a", lineHeight: 1, textShadow: "0 0 30px rgba(255,42,42,0.5)" },
+  heroYDash: { fontSize: 24, color: "#ffffff" },
+  heroYTy: { fontSize: 36, fontWeight: 700, color: "#ff2a2a" },
+  heroYMain: { fontSize: 22, color: "#ffffff", fontStyle: "italic", marginBottom: 10 },
+  heroYSub: { fontSize: 15, color: "#aaaaaa", letterSpacing: 1 },
   heroBtn: { background: "linear-gradient(135deg, #a855f7, #7c3aed)", color: "#ffffff", border: "none", borderRadius: 14, padding: "20px 56px", fontSize: 18, fontWeight: 700, cursor: "pointer", letterSpacing: 1, marginBottom: 60 },
   heroScroll: { fontSize: 28, color: "#3a2a5a", animation: "bounce 2s infinite" },
 
