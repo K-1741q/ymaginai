@@ -437,6 +437,12 @@ function ProcessTimeline() {
         <div style={s.counterNote}>przy {workers} pracownikach × {rate} zł/h</div>
       </div>
 
+      {/* Steps title */}
+      <div style={{ textAlign:"center", margin:"56px 0 32px" }}>
+        <div style={{ fontSize:13, color:"#a855f7", textTransform:"uppercase", letterSpacing:3, marginBottom:10 }}>Od formularza do decyzji</div>
+        <div style={{ fontSize:28, fontWeight:700, color:"#111111", fontFamily:"Palatino Linotype, serif" }}>Twoja droga przez proces współpracy</div>
+      </div>
+
       {/* Steps */}
       <div style={s.stepsWrap}>
         {PROCESS_STEPS.map((step, i) => {
@@ -445,50 +451,50 @@ function ProcessTimeline() {
           return (
             <div key={i} style={{ display:"flex", flexDirection:"column", alignItems:"center" }}>
               <div style={{ display:"flex", alignItems:"flex-start", gap:20, width:"100%",
-                cursor:"pointer" }}
+                cursor:"pointer", background: isActive ? `${step.color}11` : "transparent",
+                borderRadius:14, padding:"12px", transition:"background 0.3s" }}
                 onClick={() => setActiveStep(isActive ? null : i)}>
 
                 {/* Icon + line */}
                 <div style={{ display:"flex", flexDirection:"column", alignItems:"center", flexShrink:0 }}>
-                  <div style={{ width:56, height:56, borderRadius:"50%",
-                    background: isActive ? step.color : "#1a0f2e",
-                    border:`2px solid ${step.color}`,
+                  <div style={{ width:64, height:64, borderRadius:"50%",
+                    background: isActive ? step.color : "#f8f6ff",
+                    border:`3px solid ${step.color}`,
                     display:"flex", alignItems:"center", justifyContent:"center",
-                    fontSize:24, transition:"all 0.3s",
-                    boxShadow: isActive ? `0 0 20px ${step.color}66` : "none" }}>
+                    fontSize:28, transition:"all 0.3s",
+                    boxShadow: isActive ? `0 0 24px ${step.color}66` : "none" }}>
                     {step.icon}
                   </div>
                   {!isLast && (
-                    <div style={{ width:2, height:40, background:`linear-gradient(${step.color}, ${PROCESS_STEPS[i+1].color})`,
-                      opacity:0.4, marginTop:4 }} />
+                    <div style={{ width:3, height:40, background:`linear-gradient(${step.color}, ${PROCESS_STEPS[i+1].color})`,
+                      opacity:0.5, marginTop:4 }} />
                   )}
                 </div>
 
                 {/* Content */}
-                <div style={{ flex:1, paddingTop:12 }}>
-                  <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:6 }}>
-                    <span style={{ fontSize:11, color:step.color, fontWeight:700,
-                      textTransform:"uppercase", letterSpacing:1,
-                      background:`${step.color}22`, padding:"2px 10px", borderRadius:20 }}>
+                <div style={{ flex:1, paddingTop:10 }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:8 }}>
+                    <span style={{ fontSize:18, color:step.color, fontWeight:900,
+                      textTransform:"uppercase", letterSpacing:2,
+                      background:`${step.color}18`, padding:"4px 16px", borderRadius:20 }}>
                       {step.who}
                     </span>
-                    <span style={{ fontSize:11, color:"#666", fontStyle:"italic" }}>{step.time}</span>
+                    <span style={{ fontSize:13, color:"#888", fontStyle:"italic" }}>{step.time}</span>
                   </div>
-                  <div style={{ fontSize:18, fontWeight:700, color:"#ffffff", marginBottom:isActive?8:0,
+                  <div style={{ fontSize:20, fontWeight:700, color:"#111111", marginBottom:isActive?10:0,
                     transition:"all 0.3s" }}>
                     {step.title}
                   </div>
                   {isActive && (
-                    <div style={{ fontSize:15, color:"#cccccc", lineHeight:1.7,
-                      borderLeft:`3px solid ${step.color}`, paddingLeft:14,
-                      animation:"fadeIn 0.3s ease" }}>
+                    <div style={{ fontSize:16, color:"#444444", lineHeight:1.7,
+                      borderLeft:`4px solid ${step.color}`, paddingLeft:16 }}>
                       {step.desc}
                     </div>
                   )}
                 </div>
 
                 {/* Expand arrow */}
-                <div style={{ color:step.color, fontSize:18, paddingTop:14, transition:"transform 0.3s",
+                <div style={{ color:step.color, fontSize:22, paddingTop:16, transition:"transform 0.3s",
                   transform: isActive ? "rotate(180deg)" : "rotate(0deg)" }}>▾</div>
               </div>
             </div>
@@ -496,9 +502,12 @@ function ProcessTimeline() {
         })}
       </div>
 
-      <div style={s.processBottom}>
+      <div style={{ ...s.processBottom, color:"#555555" }}>
         Każdy dzień bez systemu to koszt który rośnie.<br/>
-        <em style={s.em}>Fast Track – jeśli nie chcesz czekać na kolejne czytanie.</em>
+        <em style={{ color:"#a855f7" }}>Fast Track – jeśli nie chcesz czekać na kolejne czytanie.</em><br/><br/>
+        <span style={{ fontSize:20, fontWeight:700, color:"#111111", fontStyle:"normal" }}>
+          "Brak decyzji też jest decyzją – tylko że zawsze na niekorzyść firmy."
+        </span>
       </div>
     </div>
   );
@@ -629,8 +638,9 @@ export default function Ymaginai() {
             <br /><br />
             <em style={s.em}>Formularze czytam raz na dwa tygodnie. Kolejne czytanie już było. Fast Track dostępny dla niecierpliwych.</em>
           </p>
-          <div style={s.cardsRow}>
-            {SERVICES.map((srv, i) => (
+          {/* Start + Scale w górnym rzędzie */}
+          <div style={s.cardsRowTop}>
+            {SERVICES.filter(srv => srv.tier === "Start" || srv.tier === "Scale").map((srv, i) => (
               <div key={i} style={{ ...s.card, ...(srv.highlight ? s.cardHL : {}) }}>
                 {srv.highlight && <div style={s.cardBadge}>Najpopularniejszy</div>}
                 <div style={s.cardTier}>{srv.tier}</div>
@@ -639,7 +649,25 @@ export default function Ymaginai() {
                 <div style={s.cardSub}>{srv.sub}</div>
                 <div style={s.cardDiv} />
                 {srv.features.map((f, j) => <div key={j} style={s.cardFeat}>✦ {f}</div>)}
-
+                {srv.note && <div style={s.cardNote}>{srv.note}</div>}
+                <button style={{ ...s.cardBtn, ...(srv.highlight ? s.cardBtnHL : {}) }}
+                  onClick={() => scrollTo("kontakt")}>
+                  Wyślij formularz
+                </button>
+              </div>
+            ))}
+          </div>
+          {/* Mini + Indywidualny w dolnym rzędzie */}
+          <div style={s.cardsRowBottom}>
+            {SERVICES.filter(srv => srv.tier === "✦ Mini" || srv.tier === "✦ Indywidualny").map((srv, i) => (
+              <div key={i} style={{ ...s.cardSmall, ...(srv.highlight ? s.cardHL : {}) }}>
+                {srv.highlight && <div style={s.cardBadge}>Najpopularniejszy</div>}
+                <div style={s.cardTier}>{srv.tier}</div>
+                <div style={s.cardTag}>{srv.tag}</div>
+                <div style={s.cardPrice}>{srv.price}</div>
+                <div style={s.cardSub}>{srv.sub}</div>
+                <div style={s.cardDiv} />
+                {srv.features.map((f, j) => <div key={j} style={s.cardFeat}>✦ {f}</div>)}
                 {srv.note && <div style={s.cardNote}>{srv.note}</div>}
                 <button style={{ ...s.cardBtn, ...(srv.highlight ? s.cardBtnHL : {}) }}
                   onClick={() => scrollTo("kontakt")}>
@@ -651,13 +679,13 @@ export default function Ymaginai() {
         </div>
       </section>
 
-      {/* PROCESS - dark */}
-      <section style={s.secDark}>
+      {/* PROCESS - light */}
+      <section style={s.secLight}>
         <div style={s.secInner}>
-          <SectionLabel text="Jak to działa?" />
-          <p style={{ ...s.introText, maxWidth:680, margin:"0 auto 48px" }}>
+          <SectionLabel text="Jak to działa?" dark />
+          <p style={{ ...s.introText, color:"#333", maxWidth:680, margin:"0 auto 48px" }}>
             Zastanawiasz się czemu dwa tygodnie? Bo w tym czasie Twoja firma traci pieniądze robiąc wszystko ręcznie.
-            <br /><em style={s.em}>Zobaczmy ile dokładnie.</em>
+            <br /><em style={{ color:"#7c3aed" }}>Zobaczmy ile dokładnie.</em>
           </p>
           <ProcessTimeline />
         </div>
@@ -905,6 +933,9 @@ const s = {
   radarCaption: { fontSize: 13, color: "#888888", letterSpacing: 1, textAlign: "center", textTransform: "uppercase" },
 
   cardsRow: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 28 },
+  cardsRowTop: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 28, marginBottom: 24 },
+  cardsRowBottom: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 28 },
+  cardSmall: { background: "#0f0a1a", border: "1px solid #2a1f4a", borderRadius: 20, padding: "32px 28px", display: "flex", flexDirection: "column", gap: 10, position: "relative" },
   card: { background: "#0f0a1a", border: "1px solid #2a1f4a", borderRadius: 20, padding: "36px 28px", position: "relative", display: "flex", flexDirection: "column", gap: 10 },
   cardHL: { border: "2px solid #a855f7", background: "#130d20" },
   cardBadge: { position: "absolute", top: -14, left: "50%", transform: "translateX(-50%)", background: "#a855f7", color: "#fff", fontSize: 11, fontWeight: 700, padding: "5px 18px", borderRadius: 20, whiteSpace: "nowrap" },
@@ -944,13 +975,13 @@ const s = {
   roiMysteryTitle: { fontSize:20, fontWeight:700, color:"#ff2a2a", marginBottom:12, letterSpacing:1 },
   roiMysteryDesc: { fontSize:16, color:"#aaaaaa", lineHeight:1.7, marginBottom:10 },
   roiMysteryHint: { background:"#1a0f2e", borderRadius:10, padding:"16px", textAlign:"center", fontSize:16, color:"#cccccc", lineHeight:1.8, marginTop:12 },
-  counterBox: { background:"#0f0a1a", border:"2px solid #ff2a2a", borderRadius:20, padding:"32px", textAlign:"center", marginBottom:48 },
+  counterBox: { background:"#111111", border:"2px solid #ff2a2a", borderRadius:20, padding:"32px", textAlign:"center", marginBottom:24 },
   counterTitle: { fontSize:17, color:"#aaaaaa", marginBottom:4 },
   counterTime: { fontSize:60, fontWeight:700, color:"#ffffff", fontFamily:"monospace", letterSpacing:4, margin:"16px 0 8px" },
   counterMoney: { fontSize:22, color:"#cccccc", marginBottom:8 },
-  counterNote: { fontSize:14, color:"#555555", fontStyle:"italic" },
-  calcBox: { background:"#0f0a1a", border:"1px solid #2a1f4a", borderRadius:12, padding:"20px 24px" },
-  calcLabel: { display:"block", fontSize:14, color:"#aaaaaa", marginBottom:10, letterSpacing:0.5 },
+  counterNote: { fontSize:14, color:"#888888", fontStyle:"italic" },
+  calcBox: { background:"#f0ecff", border:"1px solid #a855f7", borderRadius:12, padding:"20px 24px" },
+  calcLabel: { display:"block", fontSize:14, color:"#555555", marginBottom:10, letterSpacing:0.5 },
   calcInput: { width:"100%", background:"#1a0f2e", border:"1px solid #a855f7", borderRadius:8, padding:"12px 16px", fontSize:22, fontWeight:700, color:"#ffffff", fontFamily:"Palatino Linotype, serif", outline:"none", boxSizing:"border-box" },
   stepsWrap: { display:"flex", flexDirection:"column", gap:0, marginBottom:40 },
   processBottom: { textAlign:"center", fontSize:18, color:"#aaaaaa", lineHeight:1.8, fontStyle:"italic" },
