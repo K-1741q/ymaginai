@@ -104,47 +104,167 @@ function AnimatedDots() {
   return <canvas ref={canvasRef} style={{ position:"fixed", top:0, left:0, width:"100%", height:"100%", zIndex:0, pointerEvents:"none" }} />;
 }
 
-function RadarChart() {
-  const size = 280;
+const EDU_COLORS = ["#a855f7","#7c3aed","#ec4899","#f43f5e","#f97316","#eab308","#22c55e","#06b6d4"];
+
+function EducationWheel() {
+  const [hovered, setHovered] = useState(null);
+  const size = 340;
   const cx = size / 2;
   const cy = size / 2;
-  const r = 100;
+  const outerR = 130;
+  const innerR = 55;
+  const total = EDUCATION.length;
+
+  const slice = (i) => {
+    const startAngle = (i / total) * 2 * Math.PI - Math.PI / 2;
+    const endAngle = ((i + 1) / total) * 2 * Math.PI - Math.PI / 2;
+    const x1 = cx + outerR * Math.cos(startAngle);
+    const y1 = cy + outerR * Math.sin(startAngle);
+    const x2 = cx + outerR * Math.cos(endAngle);
+    const y2 = cy + outerR * Math.sin(endAngle);
+    const x3 = cx + innerR * Math.cos(endAngle);
+    const y3 = cy + innerR * Math.sin(endAngle);
+    const x4 = cx + innerR * Math.cos(startAngle);
+    const y4 = cy + innerR * Math.sin(startAngle);
+    return `M ${x1} ${y1} A ${outerR} ${outerR} 0 0 1 ${x2} ${y2} L ${x3} ${y3} A ${innerR} ${innerR} 0 0 0 ${x4} ${y4} Z`;
+  };
+
+  const labelPos = (i) => {
+    const angle = ((i + 0.5) / total) * 2 * Math.PI - Math.PI / 2;
+    const r = outerR + 28;
+    return { x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) };
+  };
+
+  return (
+    <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:16 }}>
+      <svg width={size} height={size} style={{ overflow:"visible" }}>
+        {EDUCATION.map((e, i) => {
+          const pos = labelPos(i);
+          const isHov = hovered === i;
+          const midAngle = ((i + 0.5) / total) * 2 * Math.PI - Math.PI / 2;
+          const offset = isHov ? 8 : 0;
+          return (
+            <g key={i}
+              style={{ cursor:"pointer", transform: isHov ? `translate(${Math.cos(midAngle)*offset}px, ${Math.sin(midAngle)*offset}px)` : "none", transition:"transform 0.2s" }}
+              onMouseEnter={() => setHovered(i)}
+              onMouseLeave={() => setHovered(null)}>
+              <path d={slice(i)} fill={EDU_COLORS[i]} opacity={isHov ? 1 : 0.75} stroke="#080810" strokeWidth="2" />
+              <text x={pos.x} y={pos.y} textAnchor="middle" dominantBaseline="middle"
+                fill="#ffffff" fontSize="10" fontWeight="600" fontFamily="Palatino Linotype, serif">
+                {i + 1}
+              </text>
+            </g>
+          );
+        })}
+        <circle cx={cx} cy={cy} r={innerR} fill="#080810" />
+        <text x={cx} y={cy - 10} textAnchor="middle" fill="#a855f7" fontSize="22" fontWeight="700" fontFamily="Palatino Linotype, serif">8</text>
+        <text x={cx} y={cy + 12} textAnchor="middle" fill="#888" fontSize="11" fontFamily="Palatino Linotype, serif">kierunków</text>
+      </svg>
+      {hovered !== null && (
+        <div style={{ background:"#1a0f2e", border:`2px solid ${EDU_COLORS[hovered]}`, borderRadius:12, padding:"14px 20px", textAlign:"center", maxWidth:300 }}>
+          <div style={{ fontSize:12, color:EDU_COLORS[hovered], textTransform:"uppercase", letterSpacing:1, marginBottom:4 }}>{EDUCATION[hovered].degree}</div>
+          <div style={{ fontSize:16, color:"#ffffff", fontWeight:700 }}>{EDUCATION[hovered].field}</div>
+        </div>
+      )}
+      {hovered === null && (
+        <div style={{ fontSize:13, color:"#666", fontStyle:"italic" }}>Najedź na segment aby zobaczyć kierunek</div>
+      )}
+    </div>
+  );
+}
+
+function RadarChart() {
+  const [progress, setProgress] = useState(0);
+  const [hoveredAxis, setHoveredAxis] = useState(null);
+  const animRef = useRef(null);
+  const size = 320;
+  const cx = size / 2;
+  const cy = size / 2;
+  const r = 110;
   const levels = [0.2, 0.4, 0.6, 0.8, 1.0];
   const dataValues = [0.9, 0.85, 0.95, 0.8, 0.92, 0.88];
+
+  useEffect(() => {
+    let start = null;
+    const duration = 1800;
+    const animate = (ts) => {
+      if (!start) start = ts;
+      const p = Math.min((ts - start) / duration, 1);
+      setProgress(p);
+      if (p < 1) animRef.current = requestAnimationFrame(animate);
+    };
+    animRef.current = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animRef.current);
+  }, []);
+
   const toRad = deg => (deg - 90) * Math.PI / 180;
   const pt = (angle, radius) => ({
     x: cx + radius * Math.cos(toRad(angle)),
     y: cy + radius * Math.sin(toRad(angle)),
   });
+
+  const animatedValues = dataValues.map(v => v * progress);
   const polygonPoints = RADAR_AXES.map((ax, i) => {
-    const p = pt(ax.angle, dataValues[i] * r);
+    const p = pt(ax.angle, animatedValues[i] * r);
     return `${p.x},${p.y}`;
   }).join(" ");
 
+  const descriptions = [
+    "Długofalowe myślenie o celach i kierunku rozwoju firmy",
+    "Efektywność procesów wewnętrznych i zarządzanie zasobami",
+    "Analiza liczb, wskaźników i zwrotu z inwestycji",
+    "Pozycja konkurencyjna i otoczenie biznesowe",
+    "Mapowanie i optymalizacja przepływów pracy",
+    "Motywacja, zachowania i potrzeby ludzi w organizacji",
+  ];
+
   return (
-    <svg width={size} height={size} style={{ overflow:"visible" }}>
-      {levels.map((lv, li) => (
-        <polygon key={li}
-          points={RADAR_AXES.map(ax => { const p = pt(ax.angle, lv*r); return `${p.x},${p.y}`; }).join(" ")}
-          fill="none" stroke="rgba(168,85,247,0.15)" strokeWidth="1" />
-      ))}
-      {RADAR_AXES.map((ax, i) => {
-        const p = pt(ax.angle, r);
-        return <line key={i} x1={cx} y1={cy} x2={p.x} y2={p.y} stroke="rgba(168,85,247,0.2)" strokeWidth="1" />;
-      })}
-      <polygon points={polygonPoints} fill="rgba(168,85,247,0.15)" stroke="#a855f7" strokeWidth="2" />
-      {RADAR_AXES.map((ax, i) => {
-        const p = pt(ax.angle, dataValues[i] * r);
-        return <circle key={i} cx={p.x} cy={p.y} r="4" fill="#a855f7" />;
-      })}
-      {RADAR_AXES.map((ax, i) => {
-        const p = pt(ax.angle, r + 22);
-        return (
-          <text key={i} x={p.x} y={p.y} textAnchor="middle" dominantBaseline="middle"
-            fill="#ffffff" fontSize="12" fontFamily="Palatino Linotype, serif">{ax.label}</text>
-        );
-      })}
-    </svg>
+    <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:16 }}>
+      <svg width={size} height={size} style={{ overflow:"visible" }}>
+        {levels.map((lv, li) => (
+          <polygon key={li}
+            points={RADAR_AXES.map(ax => { const p = pt(ax.angle, lv*r); return `${p.x},${p.y}`; }).join(" ")}
+            fill="none" stroke="rgba(168,85,247,0.15)" strokeWidth="1" />
+        ))}
+        {RADAR_AXES.map((ax, i) => {
+          const p = pt(ax.angle, r);
+          return <line key={i} x1={cx} y1={cy} x2={p.x} y2={p.y} stroke="rgba(168,85,247,0.2)" strokeWidth="1" />;
+        })}
+        <polygon points={polygonPoints} fill="rgba(168,85,247,0.15)" stroke="#a855f7" strokeWidth="2" />
+        {RADAR_AXES.map((ax, i) => {
+          const p = pt(ax.angle, animatedValues[i] * r);
+          const isHov = hoveredAxis === i;
+          return (
+            <circle key={i} cx={p.x} cy={p.y} r={isHov ? 8 : 5}
+              fill={isHov ? "#ff2a2a" : "#a855f7"}
+              style={{ cursor:"pointer", transition:"r 0.2s" }}
+              onMouseEnter={() => setHoveredAxis(i)}
+              onMouseLeave={() => setHoveredAxis(null)} />
+          );
+        })}
+        {RADAR_AXES.map((ax, i) => {
+          const p = pt(ax.angle, r + 28);
+          const isHov = hoveredAxis === i;
+          return (
+            <text key={i} x={p.x} y={p.y} textAnchor="middle" dominantBaseline="middle"
+              fill={isHov ? "#ff2a2a" : "#ffffff"} fontSize="13" fontWeight={isHov ? "700" : "400"}
+              fontFamily="Palatino Linotype, serif" style={{ cursor:"pointer" }}
+              onMouseEnter={() => setHoveredAxis(i)}
+              onMouseLeave={() => setHoveredAxis(null)}>
+              {ax.label}
+            </text>
+          );
+        })}
+      </svg>
+      {hoveredAxis !== null ? (
+        <div style={{ background:"#1a0f2e", border:"2px solid #a855f7", borderRadius:12, padding:"14px 24px", textAlign:"center", maxWidth:320 }}>
+          <div style={{ fontSize:14, color:"#a855f7", fontWeight:700, marginBottom:6 }}>{RADAR_AXES[hoveredAxis].label}</div>
+          <div style={{ fontSize:14, color:"#ffffff", lineHeight:1.6 }}>{descriptions[hoveredAxis]}</div>
+        </div>
+      ) : (
+        <div style={{ fontSize:13, color:"#666", fontStyle:"italic" }}>Najedź na punkt aby zobaczyć opis</div>
+      )}
+    </div>
   );
 }
 
@@ -230,14 +350,9 @@ export default function Ymaginai() {
                 Reszta czasu jest zajęta. Tak to działa.
               </p>
             </div>
-            <div style={s.eduGrid}>
-              {EDUCATION.map((e, i) => (
-                <div key={i} style={s.eduCard}>
-                  <div style={s.eduYear}>{e.year}</div>
-                  <div style={s.eduDegree}>{e.degree}</div>
-                  <div style={s.eduField}>{e.field}</div>
-                </div>
-              ))}
+            <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:12 }}>
+              <div style={{ fontSize:13, color:"#a855f7", textTransform:"uppercase", letterSpacing:2, marginBottom:8 }}>8 kierunków studiów</div>
+              <EducationWheel />
             </div>
           </div>
         </div>
