@@ -440,7 +440,7 @@ function ProcessTimeline() {
       {/* Steps title */}
       <div style={{ textAlign:"center", margin:"56px 0 32px" }}>
         <div style={{ fontSize:13, color:"#a855f7", textTransform:"uppercase", letterSpacing:3, marginBottom:10 }}>Od formularza do decyzji</div>
-        <div style={{ fontSize:28, fontWeight:700, color:"#111111", fontFamily:"Palatino Linotype, serif" }}>Twoja droga przez proces współpracy</div>
+        <div style={{ fontSize:36, fontWeight:700, color:"#111111", fontFamily:"Palatino Linotype, serif" }}>Twoja droga przez proces współpracy</div>
       </div>
 
       {/* Steps */}
@@ -457,37 +457,37 @@ function ProcessTimeline() {
 
                 {/* Icon + line */}
                 <div style={{ display:"flex", flexDirection:"column", alignItems:"center", flexShrink:0 }}>
-                  <div style={{ width:64, height:64, borderRadius:"50%",
+                  <div style={{ width:90, height:90, borderRadius:"50%",
                     background: isActive ? step.color : "#f8f6ff",
-                    border:`3px solid ${step.color}`,
+                    border:`4px solid ${step.color}`,
                     display:"flex", alignItems:"center", justifyContent:"center",
-                    fontSize:28, transition:"all 0.3s",
-                    boxShadow: isActive ? `0 0 24px ${step.color}66` : "none" }}>
+                    fontSize:40, transition:"all 0.3s",
+                    boxShadow: isActive ? `0 0 32px ${step.color}88` : `0 4px 16px ${step.color}33` }}>
                     {step.icon}
                   </div>
                   {!isLast && (
-                    <div style={{ width:3, height:40, background:`linear-gradient(${step.color}, ${PROCESS_STEPS[i+1].color})`,
-                      opacity:0.5, marginTop:4 }} />
+                    <div style={{ width:4, height:60, background:`linear-gradient(${step.color}, ${PROCESS_STEPS[i+1].color})`,
+                      opacity:0.6, marginTop:6 }} />
                   )}
                 </div>
 
                 {/* Content */}
                 <div style={{ flex:1, paddingTop:10 }}>
                   <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:8 }}>
-                    <span style={{ fontSize:18, color:step.color, fontWeight:900,
+                    <span style={{ fontSize:22, color:step.color, fontWeight:900,
                       textTransform:"uppercase", letterSpacing:2,
-                      background:`${step.color}18`, padding:"4px 16px", borderRadius:20 }}>
+                      background:`${step.color}18`, padding:"6px 20px", borderRadius:20 }}>
                       {step.who}
                     </span>
-                    <span style={{ fontSize:13, color:"#888", fontStyle:"italic" }}>{step.time}</span>
+                    <span style={{ fontSize:15, color:"#888", fontStyle:"italic" }}>{step.time}</span>
                   </div>
-                  <div style={{ fontSize:20, fontWeight:700, color:"#111111", marginBottom:isActive?10:0,
+                  <div style={{ fontSize:26, fontWeight:700, color:"#111111", marginBottom:isActive?12:0,
                     transition:"all 0.3s" }}>
                     {step.title}
                   </div>
                   {isActive && (
-                    <div style={{ fontSize:16, color:"#444444", lineHeight:1.7,
-                      borderLeft:`4px solid ${step.color}`, paddingLeft:16 }}>
+                    <div style={{ fontSize:18, color:"#444444", lineHeight:1.8,
+                      borderLeft:`5px solid ${step.color}`, paddingLeft:20 }}>
                       {step.desc}
                     </div>
                   )}
@@ -547,7 +547,8 @@ export default function Ymaginai() {
       </nav>
 
       {/* HERO */}
-      <section style={{ ...s.hero, opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(40px)", transition: "all 1.2s ease" }}>
+      <section style={{ position:"relative", zIndex:1, minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center" }}>
+        <div style={{ ...s.hero, opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(40px)", transition: "all 1.2s ease" }}>
         <div style={s.heroTag}>Strateg · Ekspert · Twórca procesów</div>
         <div style={s.heroLogo}>
           <span style={s.heroK}>K</span><span style={s.heroDots}>..</span>
@@ -571,6 +572,7 @@ export default function Ymaginai() {
           Wypełnij formularz ✦
         </button>
         <div style={s.heroScroll}>↓</div>
+        </div>
       </section>
 
       {/* O MNIE - dark */}
@@ -691,63 +693,39 @@ export default function Ymaginai() {
         </div>
       </section>
 
-      {/* ROI CALCULATOR OFFER - dark */}
+      {/* BOL W LICZBACH - dark mystery */}
       <section style={s.secDark}>
         <div style={s.secInner}>
-          <SectionLabel text="Autorski produkt" />
-          <div style={s.roiOfferWrap}>
-            <div style={s.roiOfferLeft}>
-              <div style={s.roiOfferBadge}>© Projekt autorski · Prawa zastrzeżone</div>
-              <h2 style={s.roiOfferTitle}>
-                <span style={{ color:"#ff2a2a" }}>ROI Calculator</span><br />
-                Kalkulator strat Twojej firmy
-              </h2>
-              <p style={s.roiOfferDesc}>
-                Interaktywny kalkulator który pokazuje klientowi w czasie rzeczywistym ile pieniędzy traci jego firma na ręcznych procesach – od momentu wejścia na stronę.
+          <div style={{ maxWidth:780, margin:"0 auto", textAlign:"center" }}>
+            <div style={s.roiOfferBadge}>© Projekt autorski · Wszelkie prawa zastrzeżone</div>
+            <h2 style={{ fontSize:52, fontWeight:700, color:"#ffffff", margin:"24px 0 16px", fontFamily:"Palatino Linotype, serif" }}>
+              Ból w liczbach
+            </h2>
+            <div style={{ width:60, height:3, background:"#ff2a2a", margin:"0 auto 40px", borderRadius:2 }} />
+            <p style={{ fontSize:20, color:"#cccccc", lineHeight:1.9, marginBottom:24 }}>
+              Narzędzie które sprawia że <strong style={{ color:"#ffffff" }}>decyzje zapadają szybciej</strong> – bez długich przekonywań, bez prezentacji w PowerPoint, bez wielogodzinnych spotkań.
+            </p>
+            <p style={{ fontSize:20, color:"#cccccc", lineHeight:1.9, marginBottom:24 }}>
+              Działa na <strong style={{ color:"#ffffff" }}>spotkaniach biznesowych i prezentacjach</strong>. Skuteczne gdy chcesz przekonać zarząd lub kadrę kierowniczą że firma potrzebuje zmiany.
+              <em style={{ color:"#a855f7" }}> Nic tak nie przemawia do szefa jak liczby.</em>
+            </p>
+            <p style={{ fontSize:20, color:"#cccccc", lineHeight:1.9, marginBottom:48 }}>
+              Dostępne również w modelu subskrypcyjnym – <strong style={{ color:"#ffffff" }}>do stałego użytku</strong> dla Twoich klientów lub kadry zarządzającej.
+            </p>
+            <div style={s.roiMystery}>
+              <div style={s.roiMysteryTitle}>Zainteresowanych zapraszamy</div>
+              <p style={{ fontSize:17, color:"#aaaaaa", lineHeight:1.8, marginBottom:20 }}>
+                Szczegóły projektu nie są publikowane. Możliwości są znacznie szersze niż to co widać publicznie.
               </p>
-              <p style={s.roiOfferDesc}>
-                Wpisuje liczbę pracowników i stawkę godzinową – licznik tyka. Każda sekunda boli. Klient sam dochodzi do wniosku że potrzebuje zmiany – zanim zdąży zapytać o cenę.
-              </p>
-              <div style={s.roiOfferFeatures}>
-                {["Klient widzi własny ból w liczbach – zanim zdąży zapytać o cenę",
-                  "Każda firma dostaje swój własny wynik – nie ogólnik",
-                  "Klient sam dochodzi do wniosku że potrzebuje zmiany",
-                  "Emocje pracują za Ciebie – Ty tylko odbierasz formularz",
-                  "Działa 24h na dobę bez Twojego udziału",
-                  "Rośnie razem z firmą klienta – im większa firma tym większy ból"].map((f, i) => (
-                  <div key={i} style={s.roiOfferFeat}>⚡ {f}</div>
-                ))}
+              <div style={s.roiMysteryHint}>
+                Wypełnij formularz i napisz w komentarzu:<br/>
+                <span style={{ color:"#ff2a2a", fontWeight:700, fontSize:22 }}>"ból w liczbach"</span><br/>
+                <em style={{ fontSize:14, color:"#555" }}>– pokażę Ci co potrafi i na co go stać.</em>
               </div>
-            </div>
-            <div style={s.roiOfferRight}>
-              <div style={s.roiPriceCard}>
-                <div style={s.roiPriceTag}>Wdrożenie jednorazowe</div>
-                <div style={s.roiPriceAmount}>od 3 500 zł</div>
-                <div style={s.roiPriceSub}>dostosowanie do Twojej branży i strony</div>
-                <div style={s.roiDivider} />
-                <div style={s.roiPriceTag}>Subskrypcja miesięczna</div>
-                <div style={s.roiPriceAmount}>od 299 zł<span style={{ fontSize:16 }}>/mies.</span></div>
-                <div style={s.roiPriceSub}>hosting · aktualizacje · modyfikacje parametrów</div>
-                <div style={s.roiDivider} />
-              <div style={s.roiDivider} />
-              <div style={s.roiMystery}>
-                <div style={s.roiMysteryTitle}>✦ Ból w liczbach</div>
-                <p style={s.roiMysteryDesc}>
-                  Narzędzie które pokazuje Twoim klientom lub kadrze zarządzającej ile kosztuje ich firma każdego dnia bez zmian. Działa na spotkaniach, prezentacjach i stronach internetowych.
-                </p>
-                <p style={s.roiMysteryDesc}>
-                  Dostępne w modelu subskrypcyjnym. Możliwości są znacznie szersze niż to co widzisz publicznie.
-                </p>
-                <div style={s.roiMysteryHint}>
-                  Wypełnij formularz i napisz w komentarzu:<br/>
-                  <span style={{ color:"#ff2a2a", fontWeight:700, fontSize:18 }}>"ból w liczbach"</span><br/>
-                  <em style={{ fontSize:14, color:"#555" }}>– pokażę Ci co jeszcze potrafi i na co go stać.</em>
-                </div>
-              </div>
-                <button style={s.roiBtn} onClick={() => document.getElementById("kontakt")?.scrollIntoView({ behavior:"smooth" })}>
-                  Zapytaj o wdrożenie ✦
-                </button>
-              </div>
+              <button style={{ ...s.roiBtn, marginTop:24 }}
+                onClick={() => document.getElementById("kontakt")?.scrollIntoView({ behavior:"smooth" })}>
+                Wypełnij formularz ✦
+              </button>
             </div>
           </div>
         </div>
@@ -890,7 +868,7 @@ const s = {
   navLinks: { display: "flex", gap: 4 },
   navBtn: { background: "transparent", border: "none", color: "#cccccc", fontSize: 14, cursor: "pointer", padding: "8px 16px", borderRadius: 20, letterSpacing: 1, textTransform: "uppercase", fontFamily: "inherit", transition: "all 0.2s" },
 
-  hero: { position: "relative", zIndex: 1, textAlign: "center", padding: "120px 40px 100px", maxWidth: 900, margin: "0 auto" },
+  hero: { position: "relative", zIndex: 1, textAlign: "center", padding: "0 40px", maxWidth: 1000, margin: "0 auto", minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" },
   heroTag: { fontSize: 14, color: "#cccccc", letterSpacing: 4, textTransform: "uppercase", marginBottom: 48 },
   heroLogo: { display: "flex", alignItems: "baseline", justifyContent: "center", gap: 10, marginBottom: 48 },
   heroK: { fontSize: 88, fontWeight: 700, color: "#ffffff", lineHeight: 1 },
@@ -908,9 +886,9 @@ const s = {
   heroBtn: { background: "linear-gradient(135deg, #a855f7, #7c3aed)", color: "#ffffff", border: "none", borderRadius: 14, padding: "20px 56px", fontSize: 18, fontWeight: 700, cursor: "pointer", letterSpacing: 1, marginBottom: 60 },
   heroScroll: { fontSize: 28, color: "#3a2a5a", animation: "bounce 2s infinite" },
 
-  secDark: { position: "relative", zIndex: 1, background: "#080810", padding: "100px 0" },
-  secLight: { position: "relative", zIndex: 1, background: "#f8f6ff", padding: "100px 0" },
-  secInner: { maxWidth: 1100, margin: "0 auto", padding: "0 48px" },
+  secDark: { position: "relative", zIndex: 1, background: "#080810", padding: "120px 0" },
+  secLight: { position: "relative", zIndex: 1, background: "#f8f6ff", padding: "120px 0" },
+  secInner: { maxWidth: 1100, margin: "0 auto", padding: "0 80px" },
 
   bodyText: { fontSize: 20, color: "#dddddd", lineHeight: 1.9, marginBottom: 20 },
   white: { color: "#ffffff", fontWeight: 700 },
@@ -983,7 +961,7 @@ const s = {
   calcBox: { background:"#f0ecff", border:"1px solid #a855f7", borderRadius:12, padding:"20px 24px" },
   calcLabel: { display:"block", fontSize:14, color:"#555555", marginBottom:10, letterSpacing:0.5 },
   calcInput: { width:"100%", background:"#1a0f2e", border:"1px solid #a855f7", borderRadius:8, padding:"12px 16px", fontSize:22, fontWeight:700, color:"#ffffff", fontFamily:"Palatino Linotype, serif", outline:"none", boxSizing:"border-box" },
-  stepsWrap: { display:"flex", flexDirection:"column", gap:0, marginBottom:40 },
+  stepsWrap: { display:"flex", flexDirection:"column", gap:8, marginBottom:56 },
   processBottom: { textAlign:"center", fontSize:18, color:"#aaaaaa", lineHeight:1.8, fontStyle:"italic" },
 
   forGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32, marginBottom: 60 },
