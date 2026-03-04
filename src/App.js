@@ -149,7 +149,7 @@ function RadarChart() {
 }
 
 export default function Ymaginai() {
-  const [section, setSection] = useState(null);
+  const [, setSection] = useState(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => { setTimeout(() => setVisible(true), 100); }, []);
@@ -472,7 +472,7 @@ const s = {
   cardFeat: { fontSize: 15, color: "#ffffff", marginBottom: 6 },
   cardRes: { fontSize: 14, color: "#aaaaaa" },
   cardNote: { fontSize: 14, color: "#c084fc", fontStyle: "italic", lineHeight: 1.6 },
-  cardBtn: { marginTop: "auto", background: "transparent", border: "1px solid #a855f7", color: "#ffffff", borderRadius: 10, padding: "14px", fontSize: 15, cursor: "pointer", fontFamily: "inherit", marginTop: 12 },
+  cardBtn: { background: "transparent", border: "1px solid #a855f7", color: "#ffffff", borderRadius: 10, padding: "14px", fontSize: 15, cursor: "pointer", fontFamily: "inherit", marginTop: 12 },
   cardBtnHL: { background: "linear-gradient(135deg, #a855f7, #7c3aed)", border: "none", fontWeight: 700 },
 
   demoRow: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 28, marginBottom: 32 },
