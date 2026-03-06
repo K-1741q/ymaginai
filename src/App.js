@@ -605,7 +605,7 @@ function ToTySection() {
         setCurrent(c => (c + 1) % TO_TY_VERSES.length);
         setFade(true);
       }, 600);
-    }, 6000);
+    }, 12000);
     return () => clearInterval(interval);
   }, []);
 
@@ -615,7 +615,7 @@ function ToTySection() {
     <section style={{ position:"relative", zIndex:1, background:"#080810", padding:"120px 0" }}>
       <div style={{ maxWidth:800, margin:"0 auto", padding:"0 80px", textAlign:"center" }}>
         <div style={{ fontSize:13, color:"#a855f7", textTransform:"uppercase", letterSpacing:4, marginBottom:40 }}>
-          Y – bo to Ty
+          Y – to Ty
         </div>
         <div style={{
           opacity: fade ? 1 : 0,
@@ -636,7 +636,7 @@ function ToTySection() {
             </div>
           ))}
           <div style={{ marginTop:32, color:"#ff2a2a", fontSize:18, fontWeight:700, letterSpacing:2 }}>
-            Y – bo to Ty.
+            Y – to Ty.
           </div>
         </div>
         <div style={{ display:"flex", gap:10, justifyContent:"center", marginTop:32 }}>
@@ -705,7 +705,7 @@ export default function Ymaginai() {
         <div style={s.heroY}>
           <div style={s.heroYTop}>
             <span style={s.heroYLetter}>Y</span>
-            <span style={s.heroYDash}> – bo to </span>
+            <span style={s.heroYDash}> – to </span>
             <span style={s.heroYTy}>Ty</span>
           </div>
           <div style={s.heroYMain}>jesteś częścią każdego procesu który tworzymy.</div>
@@ -717,6 +717,24 @@ export default function Ymaginai() {
         <div style={s.heroScroll}>↓</div>
         </div>
       </section>
+
+      {/* FIXED LEFT SIDEBAR */}
+      <div style={{
+        position: "fixed",
+        left: 0,
+        top: "50%",
+        transform: "translateY(-50%) rotate(-90deg)",
+        transformOrigin: "center center",
+        zIndex: 100,
+        display: "flex",
+        alignItems: "center",
+        gap: 8,
+        pointerEvents: "none",
+        whiteSpace: "nowrap",
+      }}>
+        <span style={{ fontSize: 32, fontWeight: 900, color: "#ff2a2a", fontFamily: "Palatino Linotype, serif", letterSpacing: 2 }}>Y</span>
+        <span style={{ fontSize: 22, fontWeight: 400, color: "#a855f7", fontFamily: "Palatino Linotype, serif", letterSpacing: 4, fontStyle: "italic" }}> – to Ty</span>
+      </div>
 
       {/* TO TY - dark rotating */}
       <ToTySection />
@@ -766,7 +784,7 @@ export default function Ymaginai() {
                 Ja nazywam to <strong>rozumieniem struktury problemu</strong>.
               </p>
               <p style={s.radarText}>
-                Bo tylko gdy wiesz <em>skąd</em> pochodzi problem – możesz stworzyć rozwiązanie które naprawdę działa.
+                Tylko gdy wiesz <em>skąd</em> pochodzi problem – możesz stworzyć rozwiązanie które naprawdę działa.
               </p>
             </div>
             <div style={s.radarRight}>
