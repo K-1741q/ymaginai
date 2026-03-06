@@ -441,66 +441,12 @@ const PROCESS_STEPS = [
 
 function ProcessTimeline() {
   const [activeStep, setActiveStep] = useState(null);
-  const [counter, setCounter] = useState(0);
-  const [workers, setWorkers] = useState(5);
-  const [rate, setRate] = useState(50);
-  const counterRef = useRef(null);
-
-  useEffect(() => {
-    counterRef.current = setInterval(() => {
-      setCounter(c => c + 1);
-    }, 1000);
-    return () => clearInterval(counterRef.current);
-  }, []);
-
-  const hours = Math.floor(counter / 3600);
-  const minutes = Math.floor((counter % 3600) / 60);
-  const seconds = counter % 60;
-  const moneylost = (counter * (rate / 3600) * workers).toFixed(2);
-  const pad = n => String(n).padStart(2, "0");
 
   return (
     <div style={{ maxWidth:800, margin:"0 auto" }}>
 
-      {/* Title */}
-      <div style={{ textAlign:"center", marginBottom:36 }}>
-        <div style={{ display:"inline-block", background:"#ffffff", border:"1px solid #ff2a2a", color:"#ff2a2a", fontSize:12, letterSpacing:2, padding:"5px 16px", borderRadius:20, marginBottom:14 }}>
-          © Projekt autorski · Wszelkie prawa zastrzeżone
-        </div>
-        <div style={{ fontSize:42, fontWeight:700, color:"#111111", fontFamily:"Palatino Linotype, serif" }}>
-          Ból w liczbach
-        </div>
-        <div style={{ width:50, height:3, background:"#ff2a2a", margin:"12px auto 0", borderRadius:2 }} />
-      </div>
-
-      {/* Calculator inputs */}
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:20, marginBottom:24 }}>
-        <div style={s.calcBox}>
-          <label style={s.calcLabel}>Liczba pracowników w firmie</label>
-          <input type="number" min="1" max="1000" value={workers}
-            onChange={e => setWorkers(Math.max(1, parseInt(e.target.value)||1))}
-            style={s.calcInput} />
-        </div>
-        <div style={s.calcBox}>
-          <label style={s.calcLabel}>Średnia stawka godzinowa (zł)</label>
-          <input type="number" min="20" max="500" value={rate}
-            onChange={e => setRate(Math.max(20, parseInt(e.target.value)||20))}
-            style={s.calcInput} />
-        </div>
-      </div>
-
-      {/* Live counter */}
-      <div style={s.counterBox}>
-        <div style={s.counterTitle}>⏱ Twoja firma traci odkąd jesteś na tej stronie:</div>
-        <div style={s.counterTime}>{pad(hours)}:{pad(minutes)}:{pad(seconds)}</div>
-        <div style={s.counterMoney}>
-          ≈ <span style={{ color:"#ff2a2a", fontWeight:700 }}>{moneylost} zł</span> stracone bezpowrotnie
-        </div>
-        <div style={s.counterNote}>przy {workers} pracownikach × {rate} zł/h</div>
-      </div>
-
       {/* Steps title */}
-      <div style={{ textAlign:"center", margin:"56px 0 32px" }}>
+      <div style={{ textAlign:"center", margin:"0 0 32px" }}>
         <div style={{ fontSize:13, color:"#a855f7", textTransform:"uppercase", letterSpacing:3, marginBottom:10 }}>Od formularza do decyzji</div>
         <div style={{ fontSize:36, fontWeight:700, color:"#111111", fontFamily:"Palatino Linotype, serif" }}>Twoja droga przez proces współpracy</div>
       </div>
