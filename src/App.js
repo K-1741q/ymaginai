@@ -673,6 +673,12 @@ export default function Ymaginai() {
     <div style={s.root}>
       <AnimatedDots />
 
+      {/* FIXED LEFT SIDEBAR */}
+      <div style={{ position:"fixed", left:16, top:"50%", transform:"translateY(-50%)", zIndex:999, display:"flex", flexDirection:"column", alignItems:"center", gap:4, pointerEvents:"none" }}>
+        <span style={{ fontSize:36, fontWeight:900, color:"#ff2a2a", fontFamily:"Palatino Linotype, serif", writingMode:"vertical-rl", textOrientation:"mixed", letterSpacing:2 }}>Y</span>
+        <span style={{ fontSize:16, fontWeight:400, color:"#a855f7", fontFamily:"Palatino Linotype, serif", writingMode:"vertical-rl", textOrientation:"mixed", letterSpacing:3, fontStyle:"italic" }}>– to Ty</span>
+      </div>
+
       {/* NAV */}
       <nav style={s.nav}>
         <div style={s.navLogo} onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
@@ -717,24 +723,6 @@ export default function Ymaginai() {
         <div style={s.heroScroll}>↓</div>
         </div>
       </section>
-
-      {/* FIXED LEFT SIDEBAR */}
-      <div style={{
-        position: "fixed",
-        left: 0,
-        top: "50%",
-        transform: "translateY(-50%) rotate(-90deg)",
-        transformOrigin: "center center",
-        zIndex: 100,
-        display: "flex",
-        alignItems: "center",
-        gap: 8,
-        pointerEvents: "none",
-        whiteSpace: "nowrap",
-      }}>
-        <span style={{ fontSize: 32, fontWeight: 900, color: "#ff2a2a", fontFamily: "Palatino Linotype, serif", letterSpacing: 2 }}>Y</span>
-        <span style={{ fontSize: 22, fontWeight: 400, color: "#a855f7", fontFamily: "Palatino Linotype, serif", letterSpacing: 4, fontStyle: "italic" }}> – to Ty</span>
-      </div>
 
       {/* TO TY - dark rotating */}
       <ToTySection />
