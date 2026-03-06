@@ -597,8 +597,10 @@ const TO_TY_VERSES = [
 function ToTySection() {
   const [current, setCurrent] = useState(0);
   const [fade, setFade] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const interval = setInterval(() => {
       setFade(false);
       setTimeout(() => {
@@ -608,6 +610,8 @@ function ToTySection() {
     }, 12000);
     return () => clearInterval(interval);
   }, []);
+
+  if (!mounted) return null;
 
   const verse = TO_TY_VERSES[current];
 
