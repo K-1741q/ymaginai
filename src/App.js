@@ -521,140 +521,40 @@ function ProcessTimeline() {
   );
 }
 
-const TO_TY_VERSES = [
-  {
-    lines: [
-      "Inni widzą firmę.",
-      "Ty widzisz to co jeszcze nie istnieje.",
-      "Każda dobra decyzja którą podjąłeś",
-      "zaczęła się od pytania które nikt inny nie zadał.",
-      "To nie jest talent.",
-      "To jest odpowiedzialność którą wziąłeś na siebie sam.",
-      "Tutaj wiesz że nie jesteś w tym sam.",
-    ],
-    label: "Właściciel"
-  },
-  {
-    lines: [
-      "Nie czekasz aż ktoś Ci powie co robić.",
-      "Widzisz problem – rozwiązujesz go.",
-      "Widzisz szansę – działasz.",
-      "Większość ludzi tego nie robi.",
-      "Ty robisz.",
-      "I właśnie dlatego jesteś tu.",
-    ],
-    label: "Ambitny"
-  },
-  {
-    lines: [
-      "Przychodzisz pierwszy.",
-      "Wychodzisz ostatni.",
-      "Łatasz to czego inni nie zauważają.",
-      "Zostajesz gdy wszyscy już wyszli.",
-      "Nikt nie mówi dziękuję.",
-      "My mówimy.",
-      "To co robisz ma znaczenie.",
-      "Ty masz znaczenie.",
-    ],
-    label: "Cichy bohater"
-  },
-  {
-    lines: [
-      "Nie przychodzisz tu po gotowe rozwiązanie.",
-      "Przychodzisz bo widzisz w swojej firmie",
-      "coś czego inni jeszcze nie widzą.",
-      "To wymaga odwagi.",
-      "I dokładnie z takimi ludźmi chcę pracować.",
-      "Ty wnosisz wizję.",
-      "Ja buduję system który ją uruchamia.",
-    ],
-    label: "Wizjoner"
-  },
-  {
-    lines: [
-      "Prowadzisz firmę.",
-      "Codziennie podejmujesz dziesiątki decyzji których nikt nie widzi.",
-      "Rozwiązujesz problemy zanim ktokolwiek się zorientuje że istniały.",
-      "Budujesz coś – nawet gdy nie masz pewności co dokładnie.",
-      "To nie jest mała rzecz.",
-      "To wymaga rodzaju odwagi o której rzadko się mówi.",
-      "Tutaj mówimy.",
-    ],
-    label: "Budowniczy"
-  },
-  {
-    lines: [
-      "W każdej firmie jest ktoś kto widzi więcej.",
-      "Kto zostaje dłużej.",
-      "Kto myśli gdy inni już śpią.",
-      "Nikt mu nie mówi że robi coś ważnego.",
-      "My mówimy.",
-    ],
-    label: "Niewidzialny"
-  },
+const TO_TY_LINES = [
+  "Inni widzą firmę. Ty widzisz to co jeszcze nie istnieje.",
+  "Nie czekasz aż ktoś Ci powie co robić. Widzisz problem – działasz.",
+  "Przychodzisz pierwszy. Wychodzisz ostatni. Ty masz znaczenie.",
+  "Prowadzisz firmę codziennie – bez mapy, często sam. To nie jest mała rzecz.",
+  "W każdej firmie jest ktoś kto widzi więcej. Nikt mu nie mówi że robi coś ważnego. My mówimy.",
+  "Nie przychodzisz tu po gotowe rozwiązanie. Ty wnosisz wizję. Ja buduję system który ją uruchamia.",
 ];
 
 function ToTySection() {
-  const [current, setCurrent] = useState(0);
-  const [fade, setFade] = useState(true);
-  const [mounted, setMounted] = useState(false);
+  const [idx, setIdx] = useState(0);
+  const [visible, setVisible] = useState(true);
 
   useEffect(() => {
-    setMounted(true);
-    const interval = setInterval(() => {
-      setFade(false);
+    const t = setInterval(() => {
+      setVisible(false);
       setTimeout(() => {
-        setCurrent(c => (c + 1) % TO_TY_VERSES.length);
-        setFade(true);
-      }, 600);
+        setIdx(i => (i + 1) % TO_TY_LINES.length);
+        setVisible(true);
+      }, 500);
     }, 12000);
-    return () => clearInterval(interval);
+    return () => clearInterval(t);
   }, []);
 
-  if (!mounted) return null;
-
-  const verse = TO_TY_VERSES[current];
-
   return (
-    <section style={{ position:"relative", zIndex:1, background:"#080810", padding:"120px 0" }}>
-      <div style={{ maxWidth:800, margin:"0 auto", padding:"0 80px", textAlign:"center" }}>
-        <div style={{ fontSize:13, color:"#a855f7", textTransform:"uppercase", letterSpacing:4, marginBottom:40 }}>
-          Y – to Ty
+    <section style={{ position:"relative", zIndex:1, background:"#080810", padding:"100px 0" }}>
+      <div style={{ maxWidth:760, margin:"0 auto", padding:"0 80px", textAlign:"center" }}>
+        <div style={{ fontSize:12, color:"#a855f7", textTransform:"uppercase", letterSpacing:4, marginBottom:36 }}>Y – to Ty</div>
+        <div style={{ opacity: visible ? 1 : 0, transition:"opacity 0.5s ease", minHeight:120, display:"flex", alignItems:"center", justifyContent:"center" }}>
+          <p style={{ fontSize:24, color:"#cccccc", fontFamily:"Palatino Linotype, serif", fontStyle:"italic", lineHeight:1.9, margin:0 }}>
+            {TO_TY_LINES[idx]}
+          </p>
         </div>
-        <div style={{
-          opacity: fade ? 1 : 0,
-          transition: "opacity 0.6s ease",
-          minHeight: 320,
-          display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center"
-        }}>
-          {verse.lines.map((line, i) => (
-            <div key={i} style={{
-              fontSize: i === 0 ? 28 : 22,
-              fontWeight: i === 0 ? 700 : 400,
-              color: i === 0 ? "#ffffff" : "#cccccc",
-              lineHeight: 1.9,
-              fontFamily: "Palatino Linotype, serif",
-              fontStyle: "italic"
-            }}>
-              {line}
-            </div>
-          ))}
-          <div style={{ marginTop:32, color:"#ff2a2a", fontSize:18, fontWeight:700, letterSpacing:2 }}>
-            Y – to Ty.
-          </div>
-        </div>
-        <div style={{ display:"flex", gap:10, justifyContent:"center", marginTop:32 }}>
-          {TO_TY_VERSES.map((_, i) => (
-            <div key={i}
-              onClick={() => { setFade(false); setTimeout(() => { setCurrent(i); setFade(true); }, 300); }}
-              style={{
-                width: i === current ? 28 : 10,
-                height:10, borderRadius:6,
-                background: i === current ? "#a855f7" : "#333",
-                cursor:"pointer", transition:"all 0.3s"
-              }} />
-          ))}
-        </div>
+        <div style={{ marginTop:32, color:"#ff2a2a", fontSize:16, fontWeight:700, letterSpacing:2 }}>Y – to Ty.</div>
       </div>
     </section>
   );
