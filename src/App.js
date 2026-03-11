@@ -606,7 +606,7 @@ function SidebarPraises() {
       left: 0,
       top: 0,
       height: "100vh",
-      width: 180,
+      width: 756,
       zIndex: 999,
       display: "flex",
       flexDirection: "column",
@@ -639,7 +639,7 @@ function SidebarPraises() {
         <div style={{
           opacity: visible ? 1 : 0,
           transition: "opacity 0.6s ease",
-          fontSize: 12,
+          fontSize: 18,
           color: "#a855f7",
           fontFamily: "Palatino Linotype, serif",
           fontStyle: "italic",
