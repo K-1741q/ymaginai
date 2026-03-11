@@ -1,4 +1,29 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Component } from "react";
+
+class ErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { error };
+  }
+  render() {
+    if (this.state.error) {
+      return (
+        <div style={{ padding: 40, background: "#080810", color: "#ff2a2a", fontFamily: "monospace", minHeight: "100vh" }}>
+          <h2>Błąd aplikacji:</h2>
+          <pre style={{ whiteSpace: "pre-wrap", color: "#ffffff", fontSize: 14 }}>
+            {this.state.error.toString()}
+            {"\n\n"}
+            {this.state.error.stack}
+          </pre>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 const EDUCATION = [
   { field: "Pielęgniarstwo", degree: "Magister", year: "2008" },
@@ -656,6 +681,7 @@ export default function Ymaginai() {
   };
 
   return (
+    <ErrorBoundary>
     <div style={s.root}>
       <AnimatedDots />
 
@@ -978,6 +1004,7 @@ export default function Ymaginai() {
         <span style={s.footerCopy}> · {new Date().getFullYear()} · Wszelkie prawa zastrzeżone</span>
       </footer>
     </div>
+    </ErrorBoundary>
   );
 }
 
@@ -1027,6 +1054,7 @@ const s = {
 
   bodyText: { fontSize: 20, color: "#dddddd", lineHeight: 1.9, marginBottom: 20 },
   white: { color: "#ffffff", fontWeight: 700 },
+  em: { color: "#c084fc", fontStyle: "italic" },
   introText: { fontSize: 20, color: "#cccccc", lineHeight: 1.8, marginBottom: 48, textAlign: "center" },
 
   aboutGrid: { display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: 64, alignItems: "start" },
