@@ -560,14 +560,96 @@ function ToTySection() {
   );
 }
 
+function SidebarPraises() {
+  const [idx, setIdx] = useState(0);
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const t = setInterval(() => {
+      setVisible(false);
+      setTimeout(() => {
+        setIdx(i => (i + 1) % TO_TY_LINES.length);
+        setVisible(true);
+      }, 600);
+    }, 15000);
+    return () => clearInterval(t);
+  }, []);
+
+  return (
+    <div style={{
+      position: "fixed",
+      left: 0,
+      top: 0,
+      height: "100vh",
+      width: 44,
+      zIndex: 999,
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "space-between",
+      padding: "24px 0",
+      pointerEvents: "none",
+      background: "linear-gradient(180deg, rgba(8,8,16,0.88) 0%, rgba(12,6,24,0.72) 50%, rgba(8,8,16,0.88) 100%)",
+      backdropFilter: "blur(8px)",
+      borderRight: "1px solid rgba(168,85,247,0.14)",
+    }}>
+      <span style={{
+        fontSize: 26,
+        fontWeight: 900,
+        color: "#ff2a2a",
+        fontFamily: "Palatino Linotype, serif",
+        writingMode: "vertical-rl",
+        textOrientation: "mixed",
+        letterSpacing: 2,
+        textShadow: "0 0 20px rgba(255,42,42,0.5)",
+      }}>Y</span>
+
+      <div style={{
+        flex: 1,
+        display: "flex",
+        alignItems: "center",
+        overflow: "hidden",
+        padding: "20px 0",
+        maxHeight: "calc(100vh - 120px)",
+      }}>
+        <div style={{
+          opacity: visible ? 1 : 0,
+          transition: "opacity 0.6s ease",
+          writingMode: "vertical-rl",
+          textOrientation: "mixed",
+          fontSize: 10,
+          color: "#a855f7",
+          fontFamily: "Palatino Linotype, serif",
+          fontStyle: "italic",
+          letterSpacing: 1.5,
+          lineHeight: 1.8,
+          overflow: "hidden",
+          maxHeight: "100%",
+        }}>
+          {TO_TY_LINES[idx]}
+        </div>
+      </div>
+
+      <span style={{
+        fontSize: 10,
+        fontWeight: 400,
+        color: "#3a2a5a",
+        fontFamily: "Palatino Linotype, serif",
+        writingMode: "vertical-rl",
+        textOrientation: "mixed",
+        letterSpacing: 3,
+        fontStyle: "italic",
+      }}>– to Ty</span>
+    </div>
+  );
+}
+
 export default function Ymaginai() {
-  const [, setSection] = useState(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => { setTimeout(() => setVisible(true), 100); }, []);
 
   const scrollTo = (id) => {
-    setSection(id);
     setTimeout(() => {
       document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
     }, 50);
@@ -578,10 +660,7 @@ export default function Ymaginai() {
       <AnimatedDots />
 
       {/* FIXED LEFT SIDEBAR */}
-      <div style={{ position:"fixed", left:16, top:"50%", transform:"translateY(-50%)", zIndex:999, display:"flex", flexDirection:"column", alignItems:"center", gap:4, pointerEvents:"none" }}>
-        <span style={{ fontSize:36, fontWeight:900, color:"#ff2a2a", fontFamily:"Palatino Linotype, serif", writingMode:"vertical-rl", textOrientation:"mixed", letterSpacing:2 }}>Y</span>
-        <span style={{ fontSize:16, fontWeight:400, color:"#a855f7", fontFamily:"Palatino Linotype, serif", writingMode:"vertical-rl", textOrientation:"mixed", letterSpacing:3, fontStyle:"italic" }}>– to Ty</span>
-      </div>
+      <SidebarPraises />
 
       {/* NAV */}
       <nav style={s.nav}>
