@@ -606,25 +606,24 @@ function SidebarPraises() {
       left: 0,
       top: 0,
       height: "100vh",
-      width: 44,
+      width: 180,
       zIndex: 999,
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
       justifyContent: "space-between",
-      padding: "24px 0",
+      padding: "24px 8px",
+      boxSizing: "border-box",
       pointerEvents: "none",
-      background: "linear-gradient(180deg, rgba(8,8,16,0.88) 0%, rgba(12,6,24,0.72) 50%, rgba(8,8,16,0.88) 100%)",
+      background: "linear-gradient(180deg, rgba(8,8,16,0.92) 0%, rgba(12,6,24,0.78) 50%, rgba(8,8,16,0.92) 100%)",
       backdropFilter: "blur(8px)",
-      borderRight: "1px solid rgba(168,85,247,0.14)",
+      borderRight: "1px solid rgba(168,85,247,0.18)",
     }}>
       <span style={{
         fontSize: 26,
         fontWeight: 900,
         color: "#ff2a2a",
         fontFamily: "Palatino Linotype, serif",
-        writingMode: "vertical-rl",
-        textOrientation: "mixed",
         letterSpacing: 2,
         textShadow: "0 0 20px rgba(255,42,42,0.5)",
       }}>Y</span>
@@ -635,21 +634,21 @@ function SidebarPraises() {
         alignItems: "center",
         overflow: "hidden",
         padding: "20px 0",
-        maxHeight: "calc(100vh - 120px)",
+        width: "100%",
       }}>
         <div style={{
           opacity: visible ? 1 : 0,
           transition: "opacity 0.6s ease",
-          writingMode: "vertical-rl",
-          textOrientation: "mixed",
-          fontSize: 10,
+          fontSize: 12,
           color: "#a855f7",
           fontFamily: "Palatino Linotype, serif",
           fontStyle: "italic",
-          letterSpacing: 1.5,
-          lineHeight: 1.8,
+          lineHeight: 1.7,
+          textAlign: "center",
+          wordBreak: "break-word",
+          overflowWrap: "break-word",
           overflow: "hidden",
-          maxHeight: "100%",
+          width: "100%",
         }}>
           {TO_TY_LINES[idx]}
         </div>
@@ -658,12 +657,11 @@ function SidebarPraises() {
       <span style={{
         fontSize: 10,
         fontWeight: 400,
-        color: "#3a2a5a",
+        color: "#4a3a6a",
         fontFamily: "Palatino Linotype, serif",
-        writingMode: "vertical-rl",
-        textOrientation: "mixed",
-        letterSpacing: 3,
+        letterSpacing: 2,
         fontStyle: "italic",
+        textAlign: "center",
       }}>– to Ty</span>
     </div>
   );
