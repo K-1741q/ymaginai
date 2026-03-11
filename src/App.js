@@ -139,7 +139,7 @@ function AnimatedDots() {
         if (d.y < 0) { d.y = 0; d.vy = Math.abs(d.vy); }
         if (d.y > canvas.height) { d.y = canvas.height; d.vy = -Math.abs(d.vy); }
 
-        const pulsedR = d.r + Math.sin(d.pulse) * 1.5;
+        const pulsedR = Math.max(0.1, d.r + Math.sin(d.pulse) * 1.5);
         const [r, g, b] = d.color;
 
         const grd = ctx.createRadialGradient(d.x, d.y, 0, d.x, d.y, pulsedR * 5);
